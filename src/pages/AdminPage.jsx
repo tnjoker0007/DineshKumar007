@@ -210,12 +210,11 @@ export const AdminPage = () => {
       }
     } catch (err) {
       setIsLoading(false);
-      // Fallback check
-      if (cleanCode.length === 6 || cleanCode === 'Dinesh@2026') {
+      if (cleanCode === 'Dinesh@2026') {
         setIsAuthenticated(true);
         setAuthStep('authenticated');
       } else {
-        setAuthError('Invalid 6-digit Google Authenticator code.');
+        setAuthError('Server error verifying TOTP code. Access Denied.');
       }
     }
   };

@@ -1,4 +1,4 @@
-import { authenticator } from 'otplib';
+import { verifySync } from 'otplib';
 import { 
   getEnv, 
   parseCookies, 
@@ -33,10 +33,11 @@ export default async function handler(req, res) {
 
   const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
 
-  // Check TOTP code using otplib
+  // Check TOTP code strictly using otplib verifySync
   let isValidTotp = false;
   try {
-    isValidTotp = authenticator.check(cleanCode, totpSecret);
+    const result = verifySync({ secret: totpSecret, token: cleanCode });
+    isValidTotp = !!(result && result.valid);
   } catch (err) {
     isValidTotp = false;
   }
