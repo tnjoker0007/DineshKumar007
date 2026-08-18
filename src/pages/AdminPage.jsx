@@ -363,32 +363,6 @@ export const AdminPage = () => {
               </div>
             </form>
           )}
-
-          <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
-            <button 
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={fetchQrSetup}
-              style={{ width: '100%', justifyContent: 'center', gap: '0.5rem', fontSize: '0.85rem' }}
-            >
-              <QrCode size={16} />
-              <span>{showQrModal ? 'Hide Authenticator Setup' : 'Scan Setup QR Code (Owner Enrollment)'}</span>
-            </button>
-          </div>
-
-          {showQrModal && (
-            <div style={{ marginTop: '1.5rem', padding: '1.2rem', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                Scan with <strong>Google Authenticator</strong> app on your phone:
-              </p>
-              <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '12px', display: 'inline-block' }}>
-                <QRCodeSVG value={qrSetupData?.otpAuthUrl || `otpauth://totp/Dinesh%20Portfolio:dineshelumalai2006@gmail.com?secret=DINESHKUMAR2FASECURITYKEY2727KEY&issuer=Dinesh%20Portfolio`} size={160} />
-              </div>
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.8rem', fontFamily: 'monospace' }}>
-                User: {email}
-              </p>
-            </div>
-          )}
         </div>
       </div>
     );
