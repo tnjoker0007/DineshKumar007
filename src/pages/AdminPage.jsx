@@ -332,7 +332,7 @@ export const AdminPage = () => {
                 </label>
                 <input 
                   type="text"
-                  maxLength={6}
+                  maxLength={30}
                   required
                   placeholder="e.g. 582910"
                   value={totpCode}
