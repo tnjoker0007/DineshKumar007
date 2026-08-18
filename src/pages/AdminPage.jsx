@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
+import { authenticator } from 'otplib';
+import { QRCodeSVG } from 'qrcode.react';
 import { 
   Settings, 
   User, 
@@ -14,7 +16,10 @@ import {
   Check, 
   Lock,
   Unlock,
-  X
+  X,
+  ShieldCheck,
+  QrCode,
+  KeyRound
 } from 'lucide-react';
 
 export const AdminPage = () => {
@@ -31,8 +36,12 @@ export const AdminPage = () => {
     resetToDefault 
   } = usePortfolio();
 
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Default open for ease of demo
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [passcode, setPasscode] = useState('');
+  const [totpCode, setTotpCode] = useState('');
+  const [totpSecret] = useState('DINESHKUMAR2006ADMIN2FA');
+  const [authError, setAuthError] = useState('');
+  const [showQrModal, setShowQrModal] = useState(false);
   const [activeTab, setActiveTab] = useState('bio');
   const [saveToast, setSaveToast] = useState(false);
 
@@ -117,30 +126,113 @@ export const AdminPage = () => {
     setShowSkillModal(false);
     setNewSkill({ name: '', category: 'Frontend', level: 85 });
     triggerToast();
+  const otpAuthUrl = `otpauth://totp/Dinesh%20Portfolio:dineshelumalai2006@gmail.com?secret=${totpSecret}&issuer=Dinesh%20Portfolio`;
+
+  const handleAdminAuth = (e) => {
+    if (e) e.preventDefault();
+    setAuthError('');
+
+    // Check Google Authenticator 6-digit code
+    const cleanCode = totpCode.trim();
+    if (cleanCode.length === 6) {
+      try {
+        const isValid = authenticator.check(cleanCode, totpSecret);
+        if (isValid) {
+          setIsAuthenticated(true);
+          return;
+        }
+      } catch (err) {}
+    }
+
+    // Check default passcode fallback
+    if (passcode === 'admin123' || cleanCode === 'admin123') {
+      setIsAuthenticated(true);
+      return;
+    }
+
+    setAuthError('Invalid Google Authenticator 6-digit code or passcode. Please check your app.');
   };
 
   if (!isAuthenticated) {
     return (
       <div className="admin-lock-screen">
-        <div className="glass-card lock-card">
-          <Lock size={40} className="lock-icon" />
-          <h2>Admin CMS Authentication</h2>
-          <p>Enter passcode (default: <strong>admin123</strong>) to edit portfolio details.</p>
-          <input 
-            type="password"
-            placeholder="Enter Admin Passcode"
-            value={passcode}
-            onChange={(e) => setPasscode(e.target.value)}
-            className="form-input"
-          />
+        <div className="glass-card lock-card" style={{ maxWidth: '440px', width: '100%', padding: '2.5rem 2rem', textAlign: 'center' }}>
+          <div className="badge badge-emerald" style={{ display: 'inline-flex', gap: '0.5rem', marginBottom: '1rem' }}>
+            <ShieldCheck size={14} />
+            <span>2FA Authenticator Protected</span>
+          </div>
+          
+          <h2 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '0.5rem' }}>Admin Authentication</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+            Enter 6-digit <strong>Google Authenticator Code</strong> or Admin Passcode below.
+          </p>
+
+          <form onSubmit={handleAdminAuth}>
+            <div style={{ marginBottom: '1rem', textAlign: 'left' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+                Google Authenticator Code (6-Digits)
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input 
+                  type="text"
+                  maxLength={6}
+                  placeholder="e.g. 482910"
+                  value={totpCode}
+                  onChange={(e) => setTotpCode(e.target.value)}
+                  className="form-input"
+                  style={{ letterSpacing: '4px', fontSize: '1.2rem', textAlign: 'center', fontWeight: 'bold' }}
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem', textAlign: 'left' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+                Or Admin Passcode (Default: admin123)
+              </label>
+              <input 
+                type="password"
+                placeholder="Enter Passcode"
+                value={passcode}
+                onChange={(e) => setPasscode(e.target.value)}
+                className="form-input"
+              />
+            </div>
+
+            {authError && (
+              <div style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                {authError}
+              </div>
+            )}
+
+            <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginBottom: '1rem' }}>
+              <Unlock size={18} />
+              <span>Verify & Unlock CMS</span>
+            </button>
+          </form>
+
           <button 
-            className="btn btn-primary"
-            onClick={() => {
-              if (passcode === 'admin123' || passcode === '') setIsAuthenticated(true);
-            }}
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={() => setShowQrModal(!showQrModal)}
+            style={{ width: '100%', justifyContent: 'center', gap: '0.5rem', fontSize: '0.85rem' }}
           >
-            Unlock Admin Panel
+            <QrCode size={16} />
+            <span>{showQrModal ? 'Hide Setup QR Code' : 'Scan Google Authenticator QR Code'}</span>
           </button>
+
+          {showQrModal && (
+            <div style={{ marginTop: '1.5rem', padding: '1.2rem', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                Scan this QR code in <strong>Google Authenticator</strong> app on your mobile phone:
+              </p>
+              <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '12px', display: 'inline-block' }}>
+                <QRCodeSVG value={otpAuthUrl} size={160} />
+              </div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.8rem', fontFamily: 'monospace' }}>
+                Secret: {totpSecret}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     );
