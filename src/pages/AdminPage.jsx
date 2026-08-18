@@ -47,6 +47,89 @@ export const AdminPage = () => {
   const [activeTab, setActiveTab] = useState('bio');
   const [saveToast, setSaveToast] = useState(false);
 
+  // Bio Form Local State
+  const [bioForm, setBioForm] = useState(data.personalInfo);
+
+  // Project Form State
+  const [showProjectModal, setShowProjectModal] = useState(false);
+  const [newProject, setNewProject] = useState({
+    title: '',
+    shortDesc: '',
+    longDesc: '',
+    category: 'Web App',
+    tags: 'React, Node.js',
+    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800',
+    liveUrl: '',
+    githubUrl: '',
+    featured: false
+  });
+
+  // Cert Form State
+  const [showCertModal, setShowCertModal] = useState(false);
+  const [newCert, setNewCert] = useState({
+    title: '',
+    issuer: '',
+    date: '',
+    credentialId: '',
+    verifyUrl: '',
+    badgeImage: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&q=80&w=300',
+    skills: 'Cloud Architecture, React'
+  });
+
+  // Skill Form State
+  const [showSkillModal, setShowSkillModal] = useState(false);
+  const [newSkill, setNewSkill] = useState({
+    name: '',
+    category: 'Frontend',
+    level: 85
+  });
+
+  const triggerToast = () => {
+    setSaveToast(true);
+    setTimeout(() => setSaveToast(false), 3000);
+  };
+
+  const handleBioSubmit = (e) => {
+    e.preventDefault();
+    updatePersonalInfo(bioForm);
+    triggerToast();
+  };
+
+  const handleAddProject = (e) => {
+    e.preventDefault();
+    if (!newProject.title) return;
+    addProject(newProject);
+    setShowProjectModal(false);
+    setNewProject({
+      title: '', shortDesc: '', longDesc: '', category: 'Web App',
+      tags: 'React, Node.js', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800',
+      liveUrl: '', githubUrl: '', featured: false
+    });
+    triggerToast();
+  };
+
+  const handleAddCert = (e) => {
+    e.preventDefault();
+    if (!newCert.title) return;
+    addCertificate(newCert);
+    setShowCertModal(false);
+    setNewCert({
+      title: '', issuer: '', date: '', credentialId: '', verifyUrl: '',
+      badgeImage: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&q=80&w=300',
+      skills: 'Cloud Architecture, React'
+    });
+    triggerToast();
+  };
+
+  const handleAddSkill = (e) => {
+    e.preventDefault();
+    if (!newSkill.name) return;
+    addSkill(newSkill);
+    setShowSkillModal(false);
+    setNewSkill({ name: '', category: 'Frontend', level: 85 });
+    triggerToast();
+  };
+
   // Check server-side session on component mount
   React.useEffect(() => {
     checkServerSession();
