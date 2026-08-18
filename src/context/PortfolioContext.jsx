@@ -43,6 +43,9 @@ export const PortfolioProvider = ({ children }) => {
         const result = await res.json();
         if (result.success && result.data) {
           setData(result.data);
+          try {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(result.data));
+          } catch (err) {}
         }
       }
     } catch (e) {
