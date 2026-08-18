@@ -8,28 +8,38 @@ import {
   Wrench, 
   Terminal, 
   Sparkles,
-  Layers
+  Shield,
+  Users,
+  Video,
+  Cpu,
+  Share2
 } from 'lucide-react';
 
 export const Skills = () => {
   const { data } = usePortfolio();
-  const { skills } = data;
+  const skillList = Array.isArray(data?.skills) ? data.skills : [];
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const categories = ['All', 'Frontend', 'Backend', 'Database & Cloud', 'UI/UX Design', 'Tools'];
+  // Dynamically extract unique categories present in the skills array
+  const rawCategories = skillList.map(s => s.category).filter(Boolean);
+  const uniqueCategories = Array.from(new Set(rawCategories));
+  const categories = ['All', ...uniqueCategories];
 
   const filteredSkills = activeCategory === 'All' 
-    ? skills 
-    : skills.filter(s => s.category.toLowerCase() === activeCategory.toLowerCase());
+    ? skillList 
+    : skillList.filter(s => s.category && s.category.trim().toLowerCase() === activeCategory.trim().toLowerCase());
 
   const getCategoryIcon = (cat) => {
-    switch (cat.toLowerCase()) {
-      case 'frontend': return Code;
-      case 'backend': return Server;
-      case 'database & cloud': return Database;
-      case 'ui/ux design': return Palette;
-      default: return Wrench;
-    }
+    if (!cat) return Wrench;
+    const c = cat.toLowerCase();
+    if (c.includes('program') || c.includes('code')) return Code;
+    if (c.includes('web') || c.includes('dev')) return Server;
+    if (c.includes('security') || c.includes('tech')) return Shield;
+    if (c.includes('db') || c.includes('data')) return Database;
+    if (c.includes('manage') || c.includes('lead')) return Users;
+    if (c.includes('creative') || c.includes('design') || c.includes('ui')) return Video;
+    if (c.includes('hardware') || c.includes('ev')) return Cpu;
+    return Terminal;
   };
 
   return (
@@ -61,13 +71,16 @@ export const Skills = () => {
           {filteredSkills.map((skill, index) => {
             const Icon = getCategoryIcon(skill.category);
             return (
-              <div key={index} className="glass-card skill-card">
+              <div key={index} className="glass-card skill-card animate-fade">
                 <div className="skill-info">
                   <div className="skill-title-group">
                     <div className="skill-icon">
                       <Icon size={18} />
                     </div>
-                    <span className="skill-name">{skill.name}</span>
+                    <div>
+                      <span className="skill-name">{skill.name}</span>
+                      <span className="skill-cat-tag">{skill.category}</span>
+                    </div>
                   </div>
                   <span className="skill-level-text">{skill.level}%</span>
                 </div>
@@ -138,8 +151,8 @@ export const Skills = () => {
           gap: 0.7rem;
         }
         .skill-icon {
-          width: 32px;
-          height: 32px;
+          width: 34px;
+          height: 34px;
           border-radius: 8px;
           background: rgba(99, 102, 241, 0.12);
           color: var(--accent-primary);
@@ -150,6 +163,12 @@ export const Skills = () => {
         .skill-name {
           font-weight: 600;
           font-size: 0.95rem;
+          display: block;
+        }
+        .skill-cat-tag {
+          font-size: 0.75rem;
+          color: var(--text-muted);
+          display: block;
         }
         .skill-level-text {
           font-family: var(--font-mono);

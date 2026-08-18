@@ -243,16 +243,16 @@ export const defaultPortfolioData = {
   ],
 
   skills: [
-    { name: "Java / C / C++", category: "Programming", level: 92, icon: "Code" },
-    { name: "Python", category: "Programming", level: 90, icon: "Terminal" },
-    { name: "HTML5 / CSS3 / JavaScript", category: "Web", level: 94, icon: "Layout" },
-    { name: "Web Development", category: "Web", level: 88, icon: "Server" },
+    { name: "Java / C / C++", category: "Programming & Languages", level: 92, icon: "Code" },
+    { name: "Python", category: "Programming & Languages", level: 90, icon: "Terminal" },
+    { name: "HTML5 / CSS3 / JavaScript", category: "Web Engineering", level: 94, icon: "Layout" },
+    { name: "Web Development", category: "Web Engineering", level: 88, icon: "Server" },
     { name: "AI & Cybersecurity Tools", category: "Tech & Security", level: 85, icon: "Shield" },
     { name: "Database Management (DBMS)", category: "Tech & Security", level: 88, icon: "Database" },
-    { name: "Leadership & Project Management", category: "Management", level: 95, icon: "Users" },
-    { name: "Video, Photo & Vector Editing", category: "Creative", level: 88, icon: "Video" },
-    { name: "Digital Marketing & Social Media", category: "Creative", level: 86, icon: "Share2" },
-    { name: "Hardware, EV & Battery Projects", category: "Hardware", level: 85, icon: "Cpu" }
+    { name: "Leadership & Project Management", category: "Management & Leadership", level: 95, icon: "Users" },
+    { name: "Video, Photo & Vector Editing", category: "Creative & Design", level: 88, icon: "Video" },
+    { name: "Digital Marketing & Social Media", category: "Creative & Design", level: 86, icon: "Share2" },
+    { name: "Hardware, EV & Battery Projects", category: "Hardware & EV Projects", level: 85, icon: "Cpu" }
   ],
 
   experience: [
