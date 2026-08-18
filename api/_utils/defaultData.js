@@ -12,11 +12,9 @@ export const defaultPortfolioData = {
     avatar: "/dinesh_photo.jpg",
     resumeUrl: "#download-resume",
     socials: {
-      github: "https://github.com",
-      linkedin: "https://linkedin.com",
-      twitter: "https://twitter.com",
-      dribbble: "https://dribbble.com",
-      figma: "https://figma.com"
+      github: "https://github.com/tnjoker0007",
+      linkedin: "https://in.linkedin.com/in/dinesh-kumar-e-550816217",
+      instagram: "https://www.instagram.com/tj_editz_07"
     },
     stats: {
       yearsExperience: "2+ Yrs",

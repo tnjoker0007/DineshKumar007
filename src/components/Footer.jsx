@@ -1,6 +1,6 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Sparkles, Github, Linkedin, Twitter, Dribbble, Figma, Settings, Heart } from 'lucide-react';
+import { Sparkles, Github, Linkedin, Instagram, Settings } from 'lucide-react';
 
 export const Footer = () => {
   const { data, setCurrentPage } = usePortfolio();
@@ -41,29 +41,19 @@ export const Footer = () => {
           <div className="footer-col">
             <h4 className="footer-heading">Connect Socially</h4>
             <div className="social-links-row">
-              {personalInfo.socials.github && (
-                <a href={personalInfo.socials.github} target="_blank" rel="noopener noreferrer" className="social-link-btn" title="GitHub">
+              {personalInfo.socials?.github && (
+                <a href={personalInfo.socials.github} target="_blank" rel="noopener noreferrer" className="social-link-btn" title="GitHub Profile">
                   <Github size={18} />
                 </a>
               )}
-              {personalInfo.socials.linkedin && (
-                <a href={personalInfo.socials.linkedin} target="_blank" rel="noopener noreferrer" className="social-link-btn" title="LinkedIn">
+              {personalInfo.socials?.linkedin && (
+                <a href={personalInfo.socials.linkedin} target="_blank" rel="noopener noreferrer" className="social-link-btn" title="LinkedIn Profile">
                   <Linkedin size={18} />
                 </a>
               )}
-              {personalInfo.socials.twitter && (
-                <a href={personalInfo.socials.twitter} target="_blank" rel="noopener noreferrer" className="social-link-btn" title="Twitter">
-                  <Twitter size={18} />
-                </a>
-              )}
-              {personalInfo.socials.dribbble && (
-                <a href={personalInfo.socials.dribbble} target="_blank" rel="noopener noreferrer" className="social-link-btn" title="Dribbble">
-                  <Dribbble size={18} />
-                </a>
-              )}
-              {personalInfo.socials.figma && (
-                <a href={personalInfo.socials.figma} target="_blank" rel="noopener noreferrer" className="social-link-btn" title="Figma">
-                  <Figma size={18} />
+              {personalInfo.socials?.instagram && (
+                <a href={personalInfo.socials.instagram} target="_blank" rel="noopener noreferrer" className="social-link-btn" title="Instagram Profile">
+                  <Instagram size={18} />
                 </a>
               )}
             </div>
