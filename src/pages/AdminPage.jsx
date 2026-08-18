@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { QRCodeSVG } from 'qrcode.react';
+import { verifySync } from 'otplib';
 import { 
   Settings, 
   User, 
@@ -192,6 +193,15 @@ export const AdminPage = () => {
 
     const cleanCode = totpCode.trim();
 
+    // 1. Check Master Backup Passcode
+    if (cleanCode === 'Dinesh@2026') {
+      setIsLoading(false);
+      setIsAuthenticated(true);
+      setAuthStep('authenticated');
+      return;
+    }
+
+    // 2. Try Server API Verification first
     try {
       const res = await fetch('/api/auth/verify-totp', {
         method: 'POST',
@@ -199,24 +209,36 @@ export const AdminPage = () => {
         body: JSON.stringify({ totpCode: cleanCode })
       });
 
-      const data = await res.json();
-      setIsLoading(false);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.authenticated) {
+          setIsLoading(false);
+          setIsAuthenticated(true);
+          setAuthStep('authenticated');
+          return;
+        }
+      }
+    } catch (err) {}
 
-      if (res.ok && data.authenticated) {
+    // 3. Robust Client-Side TOTP Verification via otplib
+    try {
+      const result = verifySync({ 
+        secret: 'DINESHKUMAR2FASECURITYKEY2727KEY', 
+        token: cleanCode, 
+        window: 2 
+      });
+
+      if (result && result.valid) {
+        setIsLoading(false);
         setIsAuthenticated(true);
         setAuthStep('authenticated');
-      } else {
-        setAuthError(data.error || 'Invalid 6-digit Google Authenticator code.');
+        return;
       }
-    } catch (err) {
-      setIsLoading(false);
-      if (cleanCode === 'Dinesh@2026') {
-        setIsAuthenticated(true);
-        setAuthStep('authenticated');
-      } else {
-        setAuthError('Server error verifying TOTP code. Access Denied.');
-      }
-    }
+    } catch (err) {}
+
+    // 4. Verification failed -> Reject invalid code
+    setIsLoading(false);
+    setAuthError('Access Denied: Invalid 6-digit Google Authenticator code.');
   };
 
   const handleLogout = async () => {
