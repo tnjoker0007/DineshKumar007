@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { authenticator } from 'otplib';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
   Settings, 
