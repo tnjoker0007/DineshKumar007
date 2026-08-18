@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "deploy": "vite build && node -e \"import('fs').then(fs => fs.copyFileSync('client-package.json', 'dist/client-package.json'))\" && catalyst deploy --project 59460000000016026",
     "preview": "vite preview"
   },
   "dependencies": {
