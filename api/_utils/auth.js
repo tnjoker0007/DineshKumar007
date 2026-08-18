@@ -7,7 +7,7 @@ const DEFAULT_EMAIL = 'dineshelumalai2006@gmail.com';
 // Default bcrypt hash for "Dinesh@2026"
 const DEFAULT_PASSWORD_HASH = '$2a$10$8v8mFfKkQGZ6R7/wQ.a0Qe4x1n9v6xRk0G9q8.Qz3c8a9m6B4vK2O'; // Dinesh@2026
 const DEFAULT_SESSION_SECRET = 'dinesh_super_secret_jwt_key_2026_verifying_session';
-const DEFAULT_TOTP_SECRET = 'DINESHKUMAR2FAKEY';
+const DEFAULT_TOTP_SECRET = 'DINESHKUMAR2FAKE';
 
 // Failed attempt rate limiter in memory
 const failedAttempts = new Map();
