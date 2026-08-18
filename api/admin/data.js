@@ -1,5 +1,5 @@
 import { Redis } from '@upstash/redis';
-import { defaultPortfolioData } from '../../src/data/defaultData.js';
+import { defaultPortfolioData } from '../_utils/defaultData.js';
 import { parseCookies, verifyToken, getEnv } from '../_utils/auth.js';
 
 const redis = new Redis({
