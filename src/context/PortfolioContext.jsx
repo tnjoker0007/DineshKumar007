@@ -12,7 +12,7 @@ export const PortfolioProvider = ({ children }) => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved); if (parsed && parsed.personalInfo) return parsed;
       }
     } catch (e) {
       console.error("Failed to parse local storage data:", e);
@@ -41,7 +41,7 @@ export const PortfolioProvider = ({ children }) => {
       const res = await fetch('/api/admin/data');
       if (res.ok) {
         const result = await res.json();
-        if (result.success && result.data) {
+        if (result.success && result.data && result.data.personalInfo) {
           setData(result.data);
           try {
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(result.data));
