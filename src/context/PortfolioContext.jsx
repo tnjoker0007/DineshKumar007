@@ -31,18 +31,48 @@ export const PortfolioProvider = ({ children }) => {
   // Selected project modal state
   const [selectedProject, setSelectedProject] = useState(null);
 
+  // Sync global server data on mount
+  useEffect(() => {
+    fetchGlobalData();
+  }, []);
+
+  const fetchGlobalData = async () => {
+    try {
+      const res = await fetch('/api/admin/data');
+      if (res.ok) {
+        const result = await res.json();
+        if (result.success && result.data) {
+          setData(result.data);
+        }
+      }
+    } catch (e) {
+      console.log("Server fetch fallback to local data");
+    }
+  };
+
+  const saveGlobalData = async (newData) => {
+    try {
+      await fetch('/api/admin/data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: newData, masterKey: 'Dinesh@2026' })
+      });
+    } catch (e) {}
+  };
+
   // Sync theme with html root attribute
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
-  // Persist data changes to localStorage
+  // Persist data changes to localStorage & server
   useEffect(() => {
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+      saveGlobalData(data);
     } catch (e) {
-      console.error("Failed to save to localStorage:", e);
+      console.error("Failed to save data:", e);
     }
   }, [data]);
 
