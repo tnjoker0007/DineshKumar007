@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dinesh Kumar E - Professional Resume</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1e293b;
+      background: #ffffff;
+      line-height: 1.5;
+      font-size: 13px;
+      -webkit-print-color-adjust: exact;
+    }
+
+    .resume-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 40px;
+    }
+
+    /* Header */
+    .header {
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .header-main h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .header-main .title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #2563eb;
+      margin-bottom: 12px;
+    }
+
+    .contact-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      font-size: 12px;
+      color: #475569;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .contact-item svg {
+      width: 14px;
+      height: 14px;
+      color: #2563eb;
+    }
+
+    /* Layout */
+    .columns {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #2563eb;
+      padding-bottom: 4px;
+      margin-bottom: 16px;
+    }
+
+    /* Experience & Projects */
+    .timeline-item {
+      margin-bottom: 20px;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+
+    .item-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: #0f172a;
+    }
+
+    .item-subtitle {
+      font-weight: 600;
+      font-size: 12px;
+      color: #2563eb;
+    }
+
+    .item-date {
+      font-size: 11px;
+      font-weight: 500;
+      color: #64748b;
+    }
+
+    .item-desc {
+      font-size: 12px;
+      color: #334155;
+      margin-top: 4px;
+    }
+
+    .bullet-list {
+      list-style-type: disc;
+      padding-left: 18px;
+      margin-top: 6px;
+    }
+
+    .bullet-list li {
+      margin-bottom: 4px;
+      color: #334155;
+    }
+
+    /* Tags & Pills */
+    .skills-group {
+      margin-bottom: 18px;
+    }
+
+    .skills-group-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pill {
+      background: #f1f5f9;
+      color: #334155;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid #e2e8f0;
+    }
+
+    .pill-highlight {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+      font-weight: 600;
+    }
+
+    /* Certifications */
+    .cert-item {
+      margin-bottom: 12px;
+    }
+
+    .cert-name {
+      font-weight: 600;
+      font-size: 12px;
+      color: #0f172a;
+    }
+
+    .cert-issuer {
+      font-size: 11px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="resume-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-main">
+        <h1>Dinesh Kumar E</h1>
+        <div class="title">Computer Science Engineer & Team Lead</div>
+        <div class="contact-grid">
+          <div class="contact-item">📧 dineshelumalai2006@gmail.com</div>
+          <div class="contact-item">📱 +91 8072741080</div>
+          <div class="contact-item">🌐 https://dinesh-kumar007.vercel.app</div>
+          <div class="contact-item">💻 github.com/tnjoker0007</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <div class="columns">
+      <!-- Left Column: Summary, Experience & Key Projects -->
+      <div class="left-col">
+        <section style="margin-bottom: 24px;">
+          <h2 class="section-title">Professional Summary</h2>
+          <p style="color: #334155; font-size: 12px;">
+            Results-driven Computer Science & Engineering Team Lead with technical expertise in Full-Stack Web Engineering, AI Solutions, Java, Python, Cloud Architectures, and Database Management Systems. Proven track record in leading cross-functional tech teams, architecting scalable web applications, and delivering multi-agent diagnostic platforms.
+          </p>
+        </section>
+
+        <section style="margin-bottom: 24px;">
+          <h2 class="section-title">Work Experience</h2>
+          
+          <div class="timeline-item">
+            <div class="item-header">
+              <div>
+                <span class="item-title">Team Lead</span>
+                <span class="item-subtitle"> @ LTI (Larsen & Toubro Infotech)</span>
+              </div>
+              <span class="item-date">2023 - Present</span>
+            </div>
+            <ul class="bullet-list">
+              <li>Led software engineering workflows, code reviews, and architecture planning for enterprise client applications.</li>
+              <li>Engineered high-performance RESTful APIs, responsive web interfaces, and backend microservices.</li>
+              <li>Mentored junior developers and streamlined project delivery speed by 35%.</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <div class="item-header">
+              <div>
+                <span class="item-title">Digital Marketing & Tech Operations</span>
+                <span class="item-subtitle"> @ GSC</span>
+              </div>
+              <span class="item-date">2022 - 2023</span>
+            </div>
+            <ul class="bullet-list">
+              <li>Managed web infrastructure, SEO optimizations, and digital product analytics.</li>
+              <li>Automated customer intake pipelines using Node.js scripts and cloud integrations.</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <div class="item-header">
+              <div>
+                <span class="item-title">Practical Engineering Trainee</span>
+                <span class="item-subtitle"> @ Celtan</span>
+              </div>
+              <span class="item-date">2021 - 2022</span>
+            </div>
+            <ul class="bullet-list">
+              <li>Developed Java and Python backend modules for IoT hardware and data processing.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="section-title">Key Engineering Projects</h2>
+
+          <div class="timeline-item">
+            <div class="item-header">
+              <span class="item-title">NovaCare-AI: Diagnostic Intelligence Platform</span>
+            </div>
+            <p class="item-desc">
+              Multi-agent AI medical assistant providing real-time symptom analysis, lab report parsing, and specialist recommendation engines. Built using Python, PyTorch, React, and Node.js.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <div class="item-header">
+              <span class="item-title">Enterprise Portfolio & Data Control CMS</span>
+            </div>
+            <p class="item-desc">
+              Full-stack portfolio and real-time CMS featuring 2-Step Server-Side Google Authenticator TOTP 2FA security, dynamic project rendering, and direct dispatch integrations.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right Column: Education, Skills & Certifications -->
+      <div class="right-col">
+        <section style="margin-bottom: 24px;">
+          <h2 class="section-title">Education</h2>
+          <div style="margin-bottom: 12px;">
+            <div style="font-weight: 700; font-size: 13px; color: #0f172a;">B.E. Computer Science & Engineering</div>
+            <div style="font-weight: 600; font-size: 12px; color: #2563eb;">R.M.K. Engineering College</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">Focus: Distributed Systems, Cloud Architecture, DBMS</div>
+          </div>
+        </section>
+
+        <section style="margin-bottom: 24px;">
+          <h2 class="section-title">Technical Skills</h2>
+
+          <div class="skills-group">
+            <div class="skills-group-title">Core Languages</div>
+            <div class="pills">
+              <span class="pill pill-highlight">Java</span>
+              <span class="pill pill-highlight">Python</span>
+              <span class="pill">JavaScript (ES6+)</span>
+              <span class="pill">C / C++</span>
+              <span class="pill">SQL</span>
+            </div>
+          </div>
+
+          <div class="skills-group">
+            <div class="skills-group-title">Web & Frameworks</div>
+            <div class="pills">
+              <span class="pill pill-highlight">React.js</span>
+              <span class="pill pill-highlight">Node.js</span>
+              <span class="pill">Vite</span>
+              <span class="pill">Express.js</span>
+              <span class="pill">REST APIs</span>
+              <span class="pill">HTML5 / CSS3</span>
+            </div>
+          </div>
+
+          <div class="skills-group">
+            <div class="skills-group-title">Cloud & Databases</div>
+            <div class="pills">
+              <span class="pill pill-highlight">Cloud Computing</span>
+              <span class="pill">DBMS / MySQL</span>
+              <span class="pill">Vercel</span>
+              <span class="pill">Zoho Catalyst</span>
+              <span class="pill">Git / GitHub</span>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="section-title">Certifications (14)</h2>
+          
+          <div class="cert-item">
+            <div class="cert-name">NPTEL: Cloud Computing</div>
+            <div class="cert-issuer">IIT Kharagpur</div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-name">NPTEL: Database Management Systems</div>
+            <div class="cert-issuer">IIT Kharagpur</div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-name">Python Data Structures</div>
+            <div class="cert-issuer">Coursera / Univ. of Michigan</div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-name">AWS Cloud Architecture Foundations</div>
+            <div class="cert-issuer">Amazon Web Services</div>
+          </div>
+          <div class="cert-item">
+            <div class="cert-name">Software Engineering & Agile</div>
+            <div class="cert-issuer">NPTEL & Coursera</div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

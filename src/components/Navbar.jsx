@@ -12,7 +12,8 @@ import {
   Moon, 
   Menu, 
   X,
-  Layers
+  Layers,
+  Download
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -83,6 +84,18 @@ export const Navbar = () => {
 
         {/* Right Controls */}
         <div className="navbar-controls">
+          <a 
+            href="/Dinesh_Kumar_E_Resume.pdf"
+            download="Dinesh_Kumar_E_Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-secondary btn-sm"
+            style={{ textDecoration: 'none', gap: '0.4rem', fontSize: '0.85rem' }}
+          >
+            <Download size={15} />
+            <span>Resume</span>
+          </a>
+
           <button 
             className="btn-theme-toggle" 
             onClick={toggleTheme}

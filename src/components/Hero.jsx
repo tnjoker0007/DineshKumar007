@@ -40,8 +40,20 @@ export const Hero = () => {
 
           {/* Action CTAs */}
           <div className="hero-actions">
-            <button 
+            <a 
+              href="/Dinesh_Kumar_E_Resume.pdf"
+              download="Dinesh_Kumar_E_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               className="btn btn-primary"
+              style={{ textDecoration: 'none', gap: '0.6rem' }}
+            >
+              <Download size={18} />
+              <span>Download Resume (PDF)</span>
+            </a>
+
+            <button 
+              className="btn btn-secondary"
               onClick={() => setCurrentPage('hire')}
             >
               <Send size={18} />
@@ -57,14 +69,6 @@ export const Hero = () => {
             >
               <span>Explore Projects</span>
               <ArrowRight size={18} />
-            </button>
-
-            <button 
-              className="btn btn-secondary"
-              onClick={() => setCurrentPage('certificates')}
-            >
-              <Award size={18} />
-              <span>Certificates</span>
             </button>
           </div>
 
