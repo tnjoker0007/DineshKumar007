@@ -173,8 +173,8 @@ export const AdminPage = () => {
           <h2 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '0.3rem' }}>Dinesh's Admin Portal</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '1.5rem' }}>
             {authStep === 'login' 
-              ? 'Enter owner email and password to begin 2FA authentication.' 
-              : 'Enter the live 6-digit code from Google Authenticator.'}
+              ? 'Step 1 of 2: Enter owner password to proceed.' 
+              : 'Step 2 of 2: Open Google Authenticator app on your phone and type the live 6-digit code below.'}
           </p>
 
           {authStep === 'login' ? (
@@ -196,12 +196,12 @@ export const AdminPage = () => {
 
               <div style={{ marginBottom: '1.5rem', textAlign: 'left' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
-                  Password *
+                  Owner Password *
                 </label>
                 <input 
                   type="password"
                   required
-                  placeholder="Enter Password"
+                  placeholder="Enter Dinesh's Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="form-input"
@@ -216,7 +216,7 @@ export const AdminPage = () => {
 
               <button type="submit" className="btn btn-primary" disabled={isLoading} style={{ width: '100%', justifyContent: 'center', marginBottom: '1rem' }}>
                 <KeyRound size={18} />
-                <span>{isLoading ? 'Verifying Password...' : 'Next: 2FA Verification'}</span>
+                <span>{isLoading ? 'Verifying Password...' : 'Next: Enter 2FA Code'}</span>
               </button>
             </form>
           ) : (
@@ -224,19 +224,22 @@ export const AdminPage = () => {
             <form onSubmit={handleTotpStep}>
               <div style={{ marginBottom: '1.5rem', textAlign: 'left' }}>
                 <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 500 }}>
-                  Google Authenticator 6-Digit Code *
+                  Enter 6-Digit Code from Phone App *
                 </label>
                 <input 
                   type="text"
                   maxLength={6}
                   required
-                  placeholder="000 000"
+                  placeholder="e.g. 582910"
                   value={totpCode}
                   onChange={(e) => setTotpCode(e.target.value)}
                   className="form-input"
                   style={{ letterSpacing: '6px', fontSize: '1.4rem', textAlign: 'center', fontWeight: 'bold', fontFamily: 'monospace' }}
                   autoFocus
                 />
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.4rem', display: 'block' }}>
+                  Look at <strong>Google Authenticator</strong> app on your mobile phone for "Dinesh Portfolio" and type the 6 numbers shown.
+                </span>
               </div>
 
               {authError && (
