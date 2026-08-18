@@ -36,7 +36,7 @@ export default async function handler(req, res) {
   // Check TOTP code strictly using otplib verifySync
   let isValidTotp = false;
   try {
-    const result = verifySync({ secret: totpSecret, token: cleanCode });
+    const result = verifySync({ secret: totpSecret, token: cleanCode, window: 2 });
     isValidTotp = !!(result && result.valid);
   } catch (err) {
     isValidTotp = false;
