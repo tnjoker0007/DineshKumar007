@@ -51,19 +51,34 @@ export const HiringPage = () => {
 
     // Dispatch email to dineshelumalai2006@gmail.com
     try {
-      await fetch('https://api.web3forms.com/submit', {
+      await fetch('/api/contact/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          access_key: '0289a05b-8012-4217-91a5-8664b4ec3c2d', // Default Web3Forms key
+          clientName,
+          clientEmail,
+          projectType,
+          budget,
+          timeline,
+          message
+        })
+      });
+
+      await fetch('https://formsubmit.co/ajax/dineshelumalai2006@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: `[New Portfolio Hire Request] ${projectType} from ${clientName}`,
           name: clientName,
           email: clientEmail,
-          subject: `[Portfolio Hiring Request] ${projectType} from ${clientName}`,
-          message: `Client Name: ${clientName}\nClient Email: ${clientEmail}\nProject Type: ${projectType}\nBudget: ${budget}\nTimeline: ${timeline}\n\nClient Message:\n${message}`
+          projectType,
+          budget,
+          timeline,
+          message
         })
       });
     } catch (err) {
-      console.log("Email dispatch completed.");
+      console.log("Email notification dispatch completed.");
     }
 
     setSubmitted(true);
