@@ -907,6 +907,17 @@ export const AdminPage = () => {
                 </div>
               </div>
 
+              <div className="form-group">
+                <label className="form-label">Certificate Image / PDF Document URL</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. /certs/media_1787071517571.pdf or https://..."
+                  value={newCert.badgeImage} 
+                  onChange={(e) => setNewCert({ ...newCert, badgeImage: e.target.value })}
+                  className="form-input" 
+                />
+              </div>
+
               <button type="submit" className="btn btn-primary">Add Certificate</button>
             </form>
           </div>

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X } from 'lucide-react';
+import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download } from 'lucide-react';
 
 export const CertificatesPage = () => {
   const { data } = usePortfolio();
   const { certificates } = data;
   const [selectedCert, setSelectedCert] = useState(null);
+
+  const isPdf = (url) => url && (url.toLowerCase().endsWith('.pdf') || url.includes('.pdf'));
 
   return (
     <div className="certificates-page">
@@ -17,7 +19,7 @@ export const CertificatesPage = () => {
           </div>
           <h2 className="section-title">Professional Certifications</h2>
           <p className="page-intro">
-            Validated industry certifications from leading cloud, web engineering, and design organizations.
+            Validated industry certifications from leading cloud, web engineering, and academic institutions.
           </p>
         </div>
 
@@ -71,10 +73,12 @@ export const CertificatesPage = () => {
                   </a>
                 )}
                 <button 
-                  className="btn btn-secondary btn-sm"
+                  className="btn btn-primary btn-sm"
                   onClick={() => setSelectedCert(cert)}
+                  style={{ gap: '0.4rem' }}
                 >
-                  <span>View Details</span>
+                  <Eye size={14} />
+                  <span>View Details & Certificate</span>
                 </button>
               </div>
             </div>
@@ -90,14 +94,43 @@ export const CertificatesPage = () => {
               <X size={20} />
             </button>
 
-            {selectedCert.badgeImage && (
-              <img src={selectedCert.badgeImage} alt={selectedCert.title} className="modal-cert-img" />
-            )}
+            {/* Render Full Res Certificate Document (PDF iframe or Image) */}
+            <div className="modal-cert-viewer">
+              {selectedCert.badgeImage ? (
+                isPdf(selectedCert.badgeImage) ? (
+                  <div className="pdf-iframe-container">
+                    <iframe 
+                      src={`${selectedCert.badgeImage}#toolbar=0&navpanes=0`}
+                      title={selectedCert.title}
+                      className="modal-pdf-iframe"
+                    />
+                    <div className="pdf-overlay-bar">
+                      <a 
+                        href={selectedCert.badgeImage} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="btn btn-primary btn-sm"
+                      >
+                        <Download size={14} />
+                        <span>Open / Download Full Certificate Document (PDF)</span>
+                      </a>
+                    </div>
+                  </div>
+                ) : (
+                  <img src={selectedCert.badgeImage} alt={selectedCert.title} className="modal-cert-img" />
+                )
+              ) : (
+                <div className="no-cert-doc-placeholder">
+                  <FileText size={48} className="text-dim" />
+                  <p>Official Certificate Document Available via Verification Link</p>
+                </div>
+              )}
+            </div>
 
             <div className="modal-body">
               <div className="badge badge-emerald">
                 <ShieldCheck size={14} />
-                <span>Officially Verified</span>
+                <span>Officially Verified Credential</span>
               </div>
               <h3 className="modal-title">{selectedCert.title}</h3>
               <p className="cert-issuer-large">Issued by <strong>{selectedCert.issuer}</strong></p>
@@ -122,18 +155,30 @@ export const CertificatesPage = () => {
                 </div>
               </div>
 
-              {selectedCert.verifyUrl && (
-                <a 
-                  href={selectedCert.verifyUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="btn btn-primary btn-sm"
-                  style={{ marginTop: '1rem' }}
-                >
-                  <ExternalLink size={16} />
-                  <span>Open Official Verification Page</span>
-                </a>
-              )}
+              <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+                {selectedCert.badgeImage && (
+                  <a 
+                    href={selectedCert.badgeImage} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="btn btn-primary btn-sm"
+                  >
+                    <Download size={16} />
+                    <span>View / Download Full Original Document</span>
+                  </a>
+                )}
+                {selectedCert.verifyUrl && (
+                  <a 
+                    href={selectedCert.verifyUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="btn btn-secondary btn-sm"
+                  >
+                    <ExternalLink size={16} />
+                    <span>Open Verification Portal</span>
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -220,10 +265,42 @@ export const CertificatesPage = () => {
           margin-top: 0.4rem;
         }
 
+        .modal-cert-viewer {
+          width: 100%;
+          background: #0f172a;
+          border-bottom: 1px solid var(--border-light);
+        }
+        .pdf-iframe-container {
+          position: relative;
+          width: 100%;
+          height: 380px;
+          background: #0f172a;
+        }
+        .modal-pdf-iframe {
+          width: 100%;
+          height: 100%;
+          border: none;
+        }
+        .pdf-overlay-bar {
+          position: absolute;
+          bottom: 12px;
+          right: 12px;
+          z-index: 5;
+        }
         .modal-cert-img {
           width: 100%;
-          height: 220px;
-          object-fit: cover;
+          max-height: 400px;
+          object-fit: contain;
+          background: #0f172a;
+        }
+        .no-cert-doc-placeholder {
+          padding: 3rem 1.5rem;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.8rem;
+          color: var(--text-muted);
         }
         .cert-issuer-large {
           font-size: 1rem;

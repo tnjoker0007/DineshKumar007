@@ -105,9 +105,9 @@ export const defaultPortfolioData = {
       title: "Introduction to Internet of Things (IoT)",
       issuer: "NPTEL / IIT Kharagpur (SWAYAM)",
       date: "Jan - Apr 2026",
-      credentialId: "NPTEL26CS37S85120059604261300",
+      credentialId: "NPTEL26CS37S851200596",
       verifyUrl: "https://nptel.ac.in/noc",
-      badgeImage: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=300",
+      badgeImage: "/certs/media_1787071517612.pdf",
       skills: ["Internet of Things", "Embedded Systems", "Sensory Networks", "IoT Security", "Score: 84%"]
     },
     {
@@ -117,7 +117,7 @@ export const defaultPortfolioData = {
       date: "Jul - Oct 2025",
       credentialId: "NPTEL25CS103S1075200649",
       verifyUrl: "https://nptel.ac.in/noc",
-      badgeImage: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&q=80&w=300",
+      badgeImage: "/certs/media_1787071517934.pdf",
       skills: ["Python Programming", "Algorithmic Thinking", "Data Processing", "Problem Solving", "Score: 81%"]
     },
     {
@@ -127,8 +127,18 @@ export const defaultPortfolioData = {
       date: "Jan - Mar 2025",
       credentialId: "NPTEL25HS72S643310843",
       verifyUrl: "https://nptel.ac.in/noc",
-      badgeImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=300",
+      badgeImage: "/certs/media_1787071517795.pdf",
       skills: ["Professional Communication", "Leadership Skills", "Presentation", "Team Dynamics", "Score: 52%"]
+    },
+    {
+      id: "lti-fullstack",
+      title: "Full Stack Internship Certification",
+      issuer: "LTI (Larcen & Toubro Infotech)",
+      date: "2026",
+      credentialId: "LTI-HR-CERT-2026-003",
+      verifyUrl: "https://dinesh-kumar007.vercel.app/certificates",
+      badgeImage: "/certs/media_1787071517571.pdf",
+      skills: ["Full Stack Engineering", "React", "Python", "MongoDB", "Flask", "GitHub"]
     },
     {
       id: "info-1",
@@ -137,7 +147,7 @@ export const defaultPortfolioData = {
       date: "November 8, 2025",
       credentialId: "INFOSYS-JAVA-DEV-111724102045",
       verifyUrl: "https://verify.onwingspan.com",
-      badgeImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=300",
+      badgeImage: "/certs/media_1787028044237.pdf",
       skills: ["Java Core", "Enterprise Java", "Object-Oriented Programming", "Backend Development"]
     },
     {
@@ -147,7 +157,7 @@ export const defaultPortfolioData = {
       date: "November 6, 2025",
       credentialId: "INFOSYS-JAVA8-111724102045",
       verifyUrl: "https://verify.onwingspan.com",
-      badgeImage: "https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&q=80&w=300",
+      badgeImage: "/certs/media_1787071543223.pdf",
       skills: ["Streams API", "Lambda Expressions", "Optional Class", "Functional Interfaces"]
     },
     {
@@ -157,68 +167,8 @@ export const defaultPortfolioData = {
       date: "November 6, 2025",
       credentialId: "INFOSYS-JAVATOOLS-111724102045",
       verifyUrl: "https://verify.onwingspan.com",
-      badgeImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=300",
+      badgeImage: "/certs/media_1787028044251.pdf",
       skills: ["Maven", "Gradle", "JUnit", "Debugging Tools"]
-    },
-    {
-      id: "info-4",
-      title: "Java Language Features",
-      issuer: "Infosys Springboard",
-      date: "November 6, 2025",
-      credentialId: "INFOSYS-JAVALANG-111724102045",
-      verifyUrl: "https://verify.onwingspan.com",
-      badgeImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=300",
-      skills: ["Generics", "Collections Framework", "Multithreading", "Exception Handling"]
-    },
-    {
-      id: "info-5",
-      title: "Database Management System Part 1 & 2",
-      issuer: "Infosys Springboard",
-      date: "October 13, 2025",
-      credentialId: "INFOSYS-DBMS-111724102045",
-      verifyUrl: "https://verify.onwingspan.com",
-      badgeImage: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&q=80&w=300",
-      skills: ["SQL", "Relational Database Modeling", "Normalization", "Database Querying"]
-    },
-    {
-      id: "info-6",
-      title: "Artificial Intelligence Foundation Certification",
-      issuer: "Infosys Springboard",
-      date: "February 27, 2025",
-      credentialId: "INFOSYS-AI-111724102045",
-      verifyUrl: "https://verify.onwingspan.com",
-      badgeImage: "https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&q=80&w=300",
-      skills: ["AI Fundamentals", "Machine Learning", "Neural Networks", "AI Tools"]
-    },
-    {
-      id: "info-7",
-      title: "Java Programming Fundamentals",
-      issuer: "Infosys Springboard",
-      date: "February 17, 2025",
-      credentialId: "INFOSYS-JAVAFUND-111724102045",
-      verifyUrl: "https://verify.onwingspan.com",
-      badgeImage: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=300",
-      skills: ["Java Syntax", "Control Flow", "Object-Oriented Basics", "Arrays"]
-    },
-    {
-      id: "info-8",
-      title: "Software Engineering & Agile Development",
-      issuer: "Infosys Springboard",
-      date: "December 8, 2024",
-      credentialId: "INFOSYS-AGILE-111724102045",
-      verifyUrl: "https://verify.onwingspan.com",
-      badgeImage: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=300",
-      skills: ["Agile Methodologies", "Scrum", "SDLC", "Software Testing"]
-    },
-    {
-      id: "info-9",
-      title: "HTML5 - The Language",
-      issuer: "Infosys Springboard",
-      date: "December 8, 2024",
-      credentialId: "INFOSYS-HTML5-111724102045",
-      verifyUrl: "https://verify.onwingspan.com",
-      badgeImage: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&q=80&w=300",
-      skills: ["HTML5", "Semantic Web", "Forms & Validation", "DOM Structure"]
     },
     {
       id: "gsc-1",
@@ -227,7 +177,7 @@ export const defaultPortfolioData = {
       date: "June 2, 2025 – August 30, 2025",
       credentialId: "GSC-INT-2025-0608",
       verifyUrl: "https://gsc.org/verify",
-      badgeImage: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=300",
+      badgeImage: "/certs/media_1787028044667.pdf",
       skills: ["Digital Marketing", "Social Media Operations", "Content Creation", "Team Execution"]
     },
     {
@@ -237,7 +187,7 @@ export const defaultPortfolioData = {
       date: "July 2026 (12 Weeks)",
       credentialId: "NPTEL26CS150",
       verifyUrl: "https://onlinecourses.nptel.ac.in",
-      badgeImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=300",
+      badgeImage: "/certs/media_1787028044305.pdf",
       skills: ["Cloud Architecture", "Virtualization", "Distributed Systems", "Storage Management"]
     }
   ],
