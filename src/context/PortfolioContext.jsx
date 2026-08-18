@@ -31,14 +31,32 @@ export const PortfolioProvider = ({ children }) => {
   // Selected project modal state
   const [selectedProject, setSelectedProject] = useState(null);
 
-  // Sync global server data on mount
+  // Sync global server data on mount & automatic poll every 5 seconds across all browsers
   useEffect(() => {
     fetchGlobalData();
+
+    // Live background polling every 5 seconds for multi-browser sync
+    const intervalId = setInterval(() => {
+      fetchGlobalData();
+    }, 5000);
+
+    // Refetch immediately when tab becomes visible
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchGlobalData();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const fetchGlobalData = async () => {
     try {
-      const res = await fetch('/api/admin/data');
+      const res = await fetch('/api/admin/data?t=' + Date.now());
       if (res.ok) {
         const result = await res.json();
         if (result.success && result.data && result.data.personalInfo) {
