@@ -66,11 +66,10 @@ export const PortfolioProvider = ({ children }) => {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
-  // Persist data changes to localStorage & server
+  // Persist data changes to localStorage only
   useEffect(() => {
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
-      saveGlobalData(data);
     } catch (e) {
       console.error("Failed to save data:", e);
     }
@@ -80,12 +79,16 @@ export const PortfolioProvider = ({ children }) => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
-  // CRUD Actions
+  // CRUD Actions - Explicitly trigger saveToCloud on user edits
   const updatePersonalInfo = (newInfo) => {
-    setData((prev) => ({
-      ...prev,
-      personalInfo: { ...prev.personalInfo, ...newInfo }
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        personalInfo: { ...prev.personalInfo, ...newInfo }
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const addProject = (project) => {
@@ -94,24 +97,36 @@ export const PortfolioProvider = ({ children }) => {
       id: 'p_' + Date.now(),
       tags: typeof project.tags === 'string' ? project.tags.split(',').map(t => t.trim()) : project.tags
     };
-    setData((prev) => ({
-      ...prev,
-      projects: [newProject, ...prev.projects]
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        projects: [newProject, ...prev.projects]
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const updateProject = (id, updatedFields) => {
-    setData((prev) => ({
-      ...prev,
-      projects: prev.projects.map((p) => (p.id === id ? { ...p, ...updatedFields } : p))
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        projects: prev.projects.map((p) => (p.id === id ? { ...p, ...updatedFields } : p))
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const deleteProject = (id) => {
-    setData((prev) => ({
-      ...prev,
-      projects: prev.projects.filter((p) => p.id !== id)
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        projects: prev.projects.filter((p) => p.id !== id)
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const addCertificate = (cert) => {
@@ -120,38 +135,58 @@ export const PortfolioProvider = ({ children }) => {
       id: 'c_' + Date.now(),
       skills: typeof cert.skills === 'string' ? cert.skills.split(',').map(s => s.trim()) : cert.skills
     };
-    setData((prev) => ({
-      ...prev,
-      certificates: [newCert, ...prev.certificates]
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        certificates: [newCert, ...prev.certificates]
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const updateCertificate = (id, updatedFields) => {
-    setData((prev) => ({
-      ...prev,
-      certificates: prev.certificates.map((c) => (c.id === id ? { ...c, ...updatedFields } : c))
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        certificates: prev.certificates.map((c) => (c.id === id ? { ...c, ...updatedFields } : c))
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const deleteCertificate = (id) => {
-    setData((prev) => ({
-      ...prev,
-      certificates: prev.certificates.filter((c) => c.id !== id)
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        certificates: prev.certificates.filter((c) => c.id !== id)
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const addSkill = (skill) => {
-    setData((prev) => ({
-      ...prev,
-      skills: [...prev.skills, skill]
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        skills: [...prev.skills, skill]
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const deleteSkill = (index) => {
-    setData((prev) => ({
-      ...prev,
-      skills: prev.skills.filter((_, idx) => idx !== index)
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        skills: prev.skills.filter((_, idx) => idx !== index)
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const addExperience = (exp) => {
@@ -160,17 +195,25 @@ export const PortfolioProvider = ({ children }) => {
       id: 'e_' + Date.now(),
       achievements: typeof exp.achievements === 'string' ? exp.achievements.split('\n').filter(Boolean) : exp.achievements
     };
-    setData((prev) => ({
-      ...prev,
-      experience: [newExp, ...prev.experience]
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        experience: [newExp, ...prev.experience]
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const deleteExperience = (id) => {
-    setData((prev) => ({
-      ...prev,
-      experience: prev.experience.filter((e) => e.id !== id)
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        experience: prev.experience.filter((e) => e.id !== id)
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const addInquiry = (inquiry) => {
