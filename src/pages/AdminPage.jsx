@@ -19,7 +19,8 @@ import {
   X,
   ShieldCheck,
   QrCode,
-  KeyRound
+  KeyRound,
+  Quote
 } from 'lucide-react';
 
 export const AdminPage = () => {
@@ -33,6 +34,7 @@ export const AdminPage = () => {
     addSkill, 
     deleteSkill, 
     deleteInquiry,
+    deleteTestimonial,
     resetToDefault 
   } = usePortfolio();
 
@@ -462,6 +464,14 @@ export const AdminPage = () => {
             <Inbox size={16} />
             <span>Hiring Inquiries ({(data.inquiries || []).length})</span>
           </button>
+
+          <button 
+            className={`admin-tab ${activeTab === 'testimonials' ? 'active' : ''}`}
+            onClick={() => setActiveTab('testimonials')}
+          >
+            <Quote size={16} />
+            <span>Recommendations ({(data.testimonials || []).length})</span>
+          </button>
         </div>
 
         {/* Tab 1: Bio & Profile Editor */}
@@ -708,6 +718,53 @@ export const AdminPage = () => {
 
                     <p className="inq-msg">{inq.message}</p>
                     <span className="inq-date">Submitted: {new Date(inq.submittedAt).toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Tab 6: Recommendations & Feedback */}
+        {activeTab === 'testimonials' && (
+          <div className="admin-section">
+            <div className="admin-action-bar">
+              <h3>Manage Recommendations & Leader Feedback ({(data.testimonials || []).length})</h3>
+            </div>
+
+            {(data.testimonials || []).length === 0 ? (
+              <div className="empty-state">
+                <Quote size={32} />
+                <p>No submitted recommendations yet.</p>
+              </div>
+            ) : (
+              <div className="inquiries-list">
+                {(data.testimonials || []).map((t) => (
+                  <div key={t.id} className="glass-card list-item" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '0.8rem', padding: '1.2rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                        <img src={t.avatar} alt={t.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
+                        <div>
+                          <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>{t.name}</h4>
+                          <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>{t.role}{t.company ? `, ${t.company}` : ''}</span>
+                        </div>
+                      </div>
+
+                      <button 
+                        className="btn-delete"
+                        onClick={() => {
+                          deleteTestimonial(t.id);
+                          triggerToast();
+                        }}
+                        title="Delete Recommendation"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+
+                    <p style={{ margin: 0, fontSize: '0.92rem', color: 'var(--text-main)', fontStyle: 'italic' }}>
+                      "{t.content}"
+                    </p>
                   </div>
                 ))}
               </div>

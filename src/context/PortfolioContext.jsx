@@ -225,17 +225,54 @@ export const PortfolioProvider = ({ children }) => {
       id: 'inq_' + Date.now(),
       submittedAt: new Date().toISOString()
     };
-    setData((prev) => ({
-      ...prev,
-      inquiries: [newInquiry, ...(prev.inquiries || [])]
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        inquiries: [newInquiry, ...(prev.inquiries || [])]
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const deleteInquiry = (id) => {
-    setData((prev) => ({
-      ...prev,
-      inquiries: (prev.inquiries || []).filter((inq) => inq.id !== id)
-    }));
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        inquiries: (prev.inquiries || []).filter((inq) => inq.id !== id)
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
+  };
+
+  const addTestimonial = (item) => {
+    const newItem = {
+      ...item,
+      id: 't_' + Date.now(),
+      stars: item.stars || 5,
+      avatar: item.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=6366f1&color=fff`,
+      createdAt: new Date().toISOString()
+    };
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        testimonials: [newItem, ...(prev.testimonials || [])]
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
+  };
+
+  const deleteTestimonial = (id) => {
+    setData((prev) => {
+      const updated = {
+        ...prev,
+        testimonials: (prev.testimonials || []).filter((t) => t.id !== id)
+      };
+      saveGlobalData(updated);
+      return updated;
+    });
   };
 
   const resetToDefault = () => {
@@ -266,6 +303,8 @@ export const PortfolioProvider = ({ children }) => {
         deleteExperience,
         addInquiry,
         deleteInquiry,
+        addTestimonial,
+        deleteTestimonial,
         resetToDefault
       }}
     >

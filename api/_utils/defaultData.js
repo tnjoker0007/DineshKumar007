@@ -344,24 +344,7 @@ export const defaultPortfolioData = {
     }
   ],
 
-  testimonials: [
-    {
-      id: "t1",
-      name: "R.M.K. Department Head",
-      role: "Professor",
-      company: "R.M.K. Engineering College",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
-      content: "Dinesh Kumar E displays exceptional leadership, technical discipline, and enthusiasm for engineering projects. His work as a Team Lead is commendable!"
-    },
-    {
-      id: "t2",
-      name: "LTI Project Manager",
-      role: "Project Director",
-      company: "LTI",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
-      content: "Dinesh led two real-time projects smoothly. His problem-solving abilities and team coordination kept deliverables on schedule."
-    }
-  ],
+  testimonials: [],
 
   inquiries: []
 };
