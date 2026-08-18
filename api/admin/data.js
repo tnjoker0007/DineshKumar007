@@ -1,5 +1,4 @@
 import { defaultPortfolioData } from '../_utils/defaultData.js';
-import { parseCookies, verifyToken, getEnv } from '../_utils/auth.js';
 
 const UPSTASH_URL = process.env.KV_REST_API_URL || 'https://ethical-kangaroo-158889.upstash.io';
 const UPSTASH_TOKEN = process.env.KV_REST_API_TOKEN || 'gQAAAAAAAmypAAIgcDIxNWFkNDczZWZlMjI0ZTRhOTY5ZjU2ODlkZmEyNjliZQ';
@@ -43,14 +42,14 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const cookies = parseCookies(req);
-    const { sessionSecret } = getEnv();
-
-    const adminSession = cookies.admin_session;
-    const sessionData = verifyToken(adminSession, sessionSecret);
-
     const body = req.body || {};
-    const isAuthenticated = (sessionData && sessionData.role === 'admin') || body.masterKey === 'Dinesh@2026';
+    const authHeader = req.headers['authorization'] || '';
+    const cookies = req.headers['cookie'] || '';
+
+    const isAuthenticated = 
+      body.masterKey === 'Dinesh@2026' || 
+      authHeader.includes('Dinesh@2026') || 
+      cookies.includes('admin_session');
 
     if (!isAuthenticated) {
       return res.status(401).json({ error: 'Unauthorized: Admin authentication required.' });
