@@ -1,12 +1,8 @@
-import { Redis } from '@upstash/redis';
 import { defaultPortfolioData } from '../_utils/defaultData.js';
 import { parseCookies, verifyToken, getEnv } from '../_utils/auth.js';
 
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL || 'https://ethical-kangaroo-158889.upstash.io',
-  token: process.env.KV_REST_API_TOKEN || 'gQAAAAAAAmypAAIgcDIxNWFkNDczZWZlMjI0ZTRhOTY5ZjU2ODlkZmEyNjliZQ',
-});
-
+const UPSTASH_URL = process.env.KV_REST_API_URL || 'https://ethical-kangaroo-158889.upstash.io';
+const UPSTASH_TOKEN = process.env.KV_REST_API_TOKEN || 'gQAAAAAAAmypAAIgcDIxNWFkNDczZWZlMjI0ZTRhOTY5ZjU2ODlkZmEyNjliZQ';
 const REDIS_KEY = 'dinesh_portfolio_global_data_v1';
 
 export default async function handler(req, res) {
@@ -20,26 +16,30 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     try {
-      const storedData = await redis.get(REDIS_KEY);
-      let finalData = defaultPortfolioData;
-
-      if (storedData) {
-        finalData = typeof storedData === 'string' ? JSON.parse(storedData) : storedData;
+      const response = await fetch(`${UPSTASH_URL}/get/${REDIS_KEY}`, {
+        headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` }
+      });
+      
+      if (response.ok) {
+        const body = await response.json();
+        if (body && body.result) {
+          const parsed = typeof body.result === 'string' ? JSON.parse(body.result) : body.result;
+          return res.status(200).json({
+            success: true,
+            source: 'upstash_rest_cloud',
+            data: parsed
+          });
+        }
       }
-
-      return res.status(200).json({
-        success: true,
-        source: storedData ? 'upstash_cloud_redis' : 'default',
-        data: finalData
-      });
     } catch (err) {
-      console.error("Redis GET error:", err);
-      return res.status(200).json({
-        success: true,
-        source: 'fallback_default',
-        data: defaultPortfolioData
-      });
+      console.error("Upstash GET REST error:", err);
     }
+
+    return res.status(200).json({
+      success: true,
+      source: 'default_fallback',
+      data: defaultPortfolioData
+    });
   }
 
   if (req.method === 'POST') {
@@ -58,19 +58,32 @@ export default async function handler(req, res) {
 
     if (body.data) {
       try {
-        await redis.set(REDIS_KEY, JSON.stringify(body.data));
-        return res.status(200).json({
-          success: true,
-          message: 'Portfolio data permanently saved to Upstash Redis Cloud Database. Live for all visitors globally!',
-          data: body.data
+        const dataString = JSON.stringify(body.data);
+        const setResponse = await fetch(`${UPSTASH_URL}/set/${REDIS_KEY}`, {
+          method: 'POST',
+          headers: { 
+            Authorization: `Bearer ${UPSTASH_TOKEN}`,
+            'Content-Type': 'application/json'
+          },
+          body: dataString
         });
+
+        if (setResponse.ok) {
+          return res.status(200).json({
+            success: true,
+            message: 'Portfolio data saved permanently to Upstash Cloud Database!',
+            data: body.data
+          });
+        } else {
+          const errText = await setResponse.text();
+          return res.status(500).json({ error: 'Upstash SET Error: ' + errText });
+        }
       } catch (err) {
-        console.error("Redis SET error:", err);
-        return res.status(500).json({ error: 'Failed to write to cloud database: ' + err.message });
+        return res.status(500).json({ error: 'Write failed: ' + err.message });
       }
     }
 
-    return res.status(400).json({ error: 'Invalid data payload provided.' });
+    return res.status(400).json({ error: 'Invalid data payload.' });
   }
 
   return res.status(405).json({ error: 'Method not allowed' });
