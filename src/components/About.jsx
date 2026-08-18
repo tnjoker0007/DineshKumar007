@@ -1,9 +1,9 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { User, Award, GraduationCap, Heart, Zap, ShieldCheck, Download } from 'lucide-react';
+import { User, Award, GraduationCap, Heart, Zap, ShieldCheck, Mail, Send } from 'lucide-react';
 
 export const About = () => {
-  const { data } = usePortfolio();
+  const { data, setCurrentPage } = usePortfolio();
   const { personalInfo, education } = data;
 
   const coreValues = [
@@ -42,18 +42,25 @@ export const About = () => {
               </div>
               <div className="info-chip">
                 <span className="chip-label">Email:</span>
-                <span className="chip-value">{personalInfo.email}</span>
+                <span className="chip-value">dineshelumalai2006@gmail.com</span>
               </div>
             </div>
 
-            <div className="about-actions">
+            <div className="about-actions" style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
               <a 
-                href={`mailto:${personalInfo.email}`}
+                href="mailto:dineshelumalai2006@gmail.com?subject=Inquiry from Dinesh's Portfolio"
                 className="btn btn-primary btn-sm"
               >
-                <Download size={16} />
-                <span>Get In Touch</span>
+                <Mail size={16} />
+                <span>Get In Touch (Direct Email)</span>
               </a>
+              <button 
+                onClick={() => setCurrentPage('hire')}
+                className="btn btn-secondary btn-sm"
+              >
+                <Send size={16} />
+                <span>Hire Me Form</span>
+              </button>
             </div>
           </div>
 
