@@ -154,8 +154,8 @@ export const AdminPage = () => {
       setQrSetupData(data);
     } catch (err) {
       setQrSetupData({
-        otpAuthUrl: `otpauth://totp/Dinesh%20Portfolio:dineshelumalai2006@gmail.com?secret=DINESHKUMAR2006ADMIN2FA&issuer=Dinesh%20Portfolio`,
-        secret: 'DINESHKUMAR2006ADMIN2FA'
+        otpAuthUrl: `otpauth://totp/Dinesh%20Portfolio:dineshelumalai2006@gmail.com?secret=DINESHKUMAR2FAKEY&issuer=Dinesh%20Portfolio`,
+        secret: 'DINESHKUMAR2FAKEY'
       });
     }
     setShowQrModal(!showQrModal);
@@ -275,7 +275,7 @@ export const AdminPage = () => {
                 Scan with <strong>Google Authenticator</strong> app on your phone:
               </p>
               <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '12px', display: 'inline-block' }}>
-                <QRCodeSVG value={qrSetupData?.otpAuthUrl || `otpauth://totp/Dinesh%20Portfolio:dineshelumalai2006@gmail.com?secret=DINESHKUMAR2006ADMIN2FA&issuer=Dinesh%20Portfolio`} size={160} />
+                <QRCodeSVG value={qrSetupData?.otpAuthUrl || `otpauth://totp/Dinesh%20Portfolio:dineshelumalai2006@gmail.com?secret=DINESHKUMAR2FAKEY&issuer=Dinesh%20Portfolio`} size={160} />
               </div>
               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.8rem', fontFamily: 'monospace' }}>
                 User: {email}
