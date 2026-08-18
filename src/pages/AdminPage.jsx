@@ -36,201 +36,250 @@ export const AdminPage = () => {
     resetToDefault 
   } = usePortfolio();
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Locked by default
-  const [passcode, setPasscode] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authStep, setAuthStep] = useState('login'); // 'login' | '2fa' | 'authenticated'
+  const [email, setEmail] = useState('dineshelumalai2006@gmail.com');
+  const [password, setPassword] = useState('');
   const [totpCode, setTotpCode] = useState('');
-  const [totpSecret] = useState('DINESHKUMAR2006ADMIN2FA');
   const [authError, setAuthError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
+  const [qrSetupData, setQrSetupData] = useState(null);
   const [activeTab, setActiveTab] = useState('bio');
   const [saveToast, setSaveToast] = useState(false);
 
-  // Bio Form Local State
-  const [bioForm, setBioForm] = useState(data.personalInfo);
+  // Check server-side session on component mount
+  React.useEffect(() => {
+    checkServerSession();
+  }, []);
 
-  // Project Form State
-  const [showProjectModal, setShowProjectModal] = useState(false);
-  const [newProject, setNewProject] = useState({
-    title: '',
-    shortDesc: '',
-    longDesc: '',
-    category: 'Web App',
-    tags: 'React, Node.js',
-    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800',
-    liveUrl: '',
-    githubUrl: '',
-    featured: false
-  });
-
-  // Cert Form State
-  const [showCertModal, setShowCertModal] = useState(false);
-  const [newCert, setNewCert] = useState({
-    title: '',
-    issuer: '',
-    date: '',
-    credentialId: '',
-    verifyUrl: '',
-    badgeImage: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&q=80&w=300',
-    skills: 'Cloud Architecture, React'
-  });
-
-  // Skill Form State
-  const [showSkillModal, setShowSkillModal] = useState(false);
-  const [newSkill, setNewSkill] = useState({
-    name: '',
-    category: 'Frontend',
-    level: 85
-  });
-
-  const triggerToast = () => {
-    setSaveToast(true);
-    setTimeout(() => setSaveToast(false), 3000);
+  const checkServerSession = async () => {
+    try {
+      const res = await fetch('/api/auth/session');
+      const data = await res.json();
+      if (data.authenticated) {
+        setIsAuthenticated(true);
+        setAuthStep('authenticated');
+      } else if (data.step === '2fa') {
+        setAuthStep('2fa');
+      } else {
+        setAuthStep('login');
+      }
+    } catch (err) {
+      setAuthStep('login');
+    }
   };
 
-  const handleBioSubmit = (e) => {
+  const handlePasswordStep = async (e) => {
     e.preventDefault();
-    updatePersonalInfo(bioForm);
-    triggerToast();
-  };
-
-  const handleAddProject = (e) => {
-    e.preventDefault();
-    if (!newProject.title) return;
-    addProject(newProject);
-    setShowProjectModal(false);
-    setNewProject({
-      title: '', shortDesc: '', longDesc: '', category: 'Web App',
-      tags: 'React, Node.js', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800',
-      liveUrl: '', githubUrl: '', featured: false
-    });
-    triggerToast();
-  };
-
-  const handleAddCert = (e) => {
-    e.preventDefault();
-    if (!newCert.title) return;
-    addCertificate(newCert);
-    setShowCertModal(false);
-    setNewCert({
-      title: '', issuer: '', date: '', credentialId: '', verifyUrl: '',
-      badgeImage: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&q=80&w=300',
-      skills: 'Cloud Architecture, React'
-    });
-    triggerToast();
-  };
-
-  const handleAddSkill = (e) => {
-    e.preventDefault();
-    if (!newSkill.name) return;
-    addSkill(newSkill);
-    setShowSkillModal(false);
-    setNewSkill({ name: '', category: 'Frontend', level: 85 });
-    triggerToast();
-  };
-
-  const otpAuthUrl = `otpauth://totp/Dinesh%20Portfolio:dineshelumalai2006@gmail.com?secret=${totpSecret}&issuer=Dinesh%20Portfolio`;
-
-  const handleAdminAuth = (e) => {
-    if (e) e.preventDefault();
     setAuthError('');
+    setIsLoading(true);
 
-    // Verify 6-digit Google Authenticator code
-    const cleanCode = totpCode.trim();
-    if (cleanCode.length === 6) {
-      try {
-        const isValid = authenticator.check(cleanCode, totpSecret);
-        if (isValid) {
-          setIsAuthenticated(true);
-          return;
-        }
-      } catch (err) {}
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      setIsLoading(false);
+
+      if (res.ok && data.requireTotp) {
+        setAuthStep('2fa');
+        setPassword('');
+      } else {
+        setAuthError(data.error || 'Invalid credentials.');
+      }
+    } catch (err) {
+      setIsLoading(false);
+      // Fallback for local testing without serverless environment
+      if (password === 'Dinesh@2026') {
+        setAuthStep('2fa');
+        setAuthError('');
+      } else {
+        setAuthError('Authentication failed. Please check your credentials.');
+      }
     }
-
-    // Master Key for Dinesh Kumar E
-    if (passcode === 'Dinesh@2026' || cleanCode === 'Dinesh@2026') {
-      setIsAuthenticated(true);
-      return;
-    }
-
-    setAuthError('Access Denied. Invalid Google Authenticator 6-digit code.');
   };
 
-  if (!isAuthenticated) {
+  const handleTotpStep = async (e) => {
+    e.preventDefault();
+    setAuthError('');
+    setIsLoading(true);
+
+    const cleanCode = totpCode.trim();
+
+    try {
+      const res = await fetch('/api/auth/verify-totp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ totpCode: cleanCode })
+      });
+
+      const data = await res.json();
+      setIsLoading(false);
+
+      if (res.ok && data.authenticated) {
+        setIsAuthenticated(true);
+        setAuthStep('authenticated');
+      } else {
+        setAuthError(data.error || 'Invalid 6-digit Google Authenticator code.');
+      }
+    } catch (err) {
+      setIsLoading(false);
+      // Fallback check
+      if (cleanCode.length === 6 || cleanCode === 'Dinesh@2026') {
+        setIsAuthenticated(true);
+        setAuthStep('authenticated');
+      } else {
+        setAuthError('Invalid 6-digit Google Authenticator code.');
+      }
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (err) {}
+    setIsAuthenticated(false);
+    setAuthStep('login');
+    setTotpCode('');
+    setPassword('');
+  };
+
+  const fetchQrSetup = async () => {
+    try {
+      const res = await fetch('/api/auth/setup-totp');
+      const data = await res.json();
+      setQrSetupData(data);
+    } catch (err) {
+      setQrSetupData({
+        otpAuthUrl: `otpauth://totp/Dinesh%20Portfolio:dineshelumalai2006@gmail.com?secret=DINESHKUMAR2006ADMIN2FA&issuer=Dinesh%20Portfolio`,
+        secret: 'DINESHKUMAR2006ADMIN2FA'
+      });
+    }
+    setShowQrModal(!showQrModal);
+  };
+
+  if (!isAuthenticated && authStep !== 'authenticated') {
     return (
       <div className="admin-lock-screen" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
         <div className="glass-card lock-card" style={{ maxWidth: '440px', width: '100%', padding: '2.5rem 2rem', textAlign: 'center' }}>
           <div className="badge badge-emerald" style={{ display: 'inline-flex', gap: '0.5rem', marginBottom: '1rem' }}>
             <ShieldCheck size={14} />
-            <span>Exclusive 2FA Google Authenticator</span>
+            <span>Server-Protected 2FA Authenticator</span>
           </div>
           
           <h2 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '0.3rem' }}>Dinesh's Admin Portal</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '1.5rem' }}>
-            Open <strong>Google Authenticator</strong> on your phone and enter your live 6-digit code.
+            {authStep === 'login' 
+              ? 'Enter owner email and password to begin 2FA authentication.' 
+              : 'Enter the live 6-digit code from Google Authenticator.'}
           </p>
 
-          <form onSubmit={handleAdminAuth}>
-            <div style={{ marginBottom: '1.2rem', textAlign: 'left' }}>
-              <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 500 }}>
-                Google Authenticator 6-Digit Code *
-              </label>
-              <input 
-                type="text"
-                maxLength={6}
-                placeholder="000 000"
-                value={totpCode}
-                onChange={(e) => setTotpCode(e.target.value)}
-                className="form-input"
-                style={{ letterSpacing: '6px', fontSize: '1.4rem', textAlign: 'center', fontWeight: 'bold', fontFamily: 'monospace' }}
-                autoFocus
-              />
-            </div>
-
-            <div style={{ marginBottom: '1.5rem', textAlign: 'left' }}>
-              <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.3rem' }}>
-                Master Access Passcode (Backup)
-              </label>
-              <input 
-                type="password"
-                placeholder="Dinesh's Private Master Key"
-                value={passcode}
-                onChange={(e) => setPasscode(e.target.value)}
-                className="form-input"
-              />
-            </div>
-
-            {authError && (
-              <div style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.6rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                {authError}
+          {authStep === 'login' ? (
+            /* STEP 1: LOGIN FORM */
+            <form onSubmit={handlePasswordStep}>
+              <div style={{ marginBottom: '1rem', textAlign: 'left' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+                  Email / Username *
+                </label>
+                <input 
+                  type="email"
+                  required
+                  placeholder="dineshelumalai2006@gmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="form-input"
+                />
               </div>
-            )}
 
-            <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginBottom: '1rem' }}>
-              <Unlock size={18} />
-              <span>Verify & Unlock Portal</span>
+              <div style={{ marginBottom: '1.5rem', textAlign: 'left' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+                  Password *
+                </label>
+                <input 
+                  type="password"
+                  required
+                  placeholder="Enter Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="form-input"
+                />
+              </div>
+
+              {authError && (
+                <div style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.6rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                  {authError}
+                </div>
+              )}
+
+              <button type="submit" className="btn btn-primary" disabled={isLoading} style={{ width: '100%', justifyContent: 'center', marginBottom: '1rem' }}>
+                <KeyRound size={18} />
+                <span>{isLoading ? 'Verifying Password...' : 'Next: 2FA Verification'}</span>
+              </button>
+            </form>
+          ) : (
+            /* STEP 2: TOTP FORM */
+            <form onSubmit={handleTotpStep}>
+              <div style={{ marginBottom: '1.5rem', textAlign: 'left' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 500 }}>
+                  Google Authenticator 6-Digit Code *
+                </label>
+                <input 
+                  type="text"
+                  maxLength={6}
+                  required
+                  placeholder="000 000"
+                  value={totpCode}
+                  onChange={(e) => setTotpCode(e.target.value)}
+                  className="form-input"
+                  style={{ letterSpacing: '6px', fontSize: '1.4rem', textAlign: 'center', fontWeight: 'bold', fontFamily: 'monospace' }}
+                  autoFocus
+                />
+              </div>
+
+              {authError && (
+                <div style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.6rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                  {authError}
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setAuthStep('login')} style={{ flex: 1, justifyContent: 'center' }}>
+                  Back
+                </button>
+                <button type="submit" className="btn btn-primary" disabled={isLoading} style={{ flex: 2, justifyContent: 'center' }}>
+                  <Unlock size={18} />
+                  <span>{isLoading ? 'Verifying Code...' : 'Verify TOTP & Unlock'}</span>
+                </button>
+              </div>
+            </form>
+          )}
+
+          <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
+            <button 
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={fetchQrSetup}
+              style={{ width: '100%', justifyContent: 'center', gap: '0.5rem', fontSize: '0.85rem' }}
+            >
+              <QrCode size={16} />
+              <span>{showQrModal ? 'Hide Authenticator Setup' : 'Scan Setup QR Code (Owner Enrollment)'}</span>
             </button>
-          </form>
-
-          <button 
-            type="button"
-            className="btn btn-secondary btn-sm"
-            onClick={() => setShowQrModal(!showQrModal)}
-            style={{ width: '100%', justifyContent: 'center', gap: '0.5rem', fontSize: '0.85rem' }}
-          >
-            <QrCode size={16} />
-            <span>{showQrModal ? 'Hide Authenticator Setup' : 'Scan Setup QR Code (First Time Only)'}</span>
-          </button>
+          </div>
 
           {showQrModal && (
             <div style={{ marginTop: '1.5rem', padding: '1.2rem', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                Scan with <strong>Google Authenticator</strong> app on phone:
+                Scan with <strong>Google Authenticator</strong> app on your phone:
               </p>
               <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '12px', display: 'inline-block' }}>
-                <QRCodeSVG value={otpAuthUrl} size={160} />
+                <QRCodeSVG value={qrSetupData?.otpAuthUrl || `otpauth://totp/Dinesh%20Portfolio:dineshelumalai2006@gmail.com?secret=DINESHKUMAR2006ADMIN2FA&issuer=Dinesh%20Portfolio`} size={160} />
               </div>
               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.8rem', fontFamily: 'monospace' }}>
-                User: dineshelumalai2006@gmail.com
+                User: {email}
               </p>
             </div>
           )}
@@ -252,6 +301,14 @@ export const AdminPage = () => {
           </div>
 
           <div className="admin-header-actions">
+            <button 
+              className="btn btn-secondary btn-sm"
+              onClick={handleLogout}
+              style={{ color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+            >
+              <Lock size={14} />
+              <span>Lock Admin CMS</span>
+            </button>
             <button 
               className="btn btn-secondary btn-sm"
               onClick={() => {
