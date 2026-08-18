@@ -36,7 +36,7 @@ export const AdminPage = () => {
     resetToDefault 
   } = usePortfolio();
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Locked by default
   const [passcode, setPasscode] = useState('');
   const [totpCode, setTotpCode] = useState('');
   const [totpSecret] = useState('DINESHKUMAR2006ADMIN2FA');
@@ -126,13 +126,15 @@ export const AdminPage = () => {
     setShowSkillModal(false);
     setNewSkill({ name: '', category: 'Frontend', level: 85 });
     triggerToast();
+  };
+
   const otpAuthUrl = `otpauth://totp/Dinesh%20Portfolio:dineshelumalai2006@gmail.com?secret=${totpSecret}&issuer=Dinesh%20Portfolio`;
 
   const handleAdminAuth = (e) => {
     if (e) e.preventDefault();
     setAuthError('');
 
-    // Check Google Authenticator 6-digit code
+    // Verify 6-digit Google Authenticator code
     const cleanCode = totpCode.trim();
     if (cleanCode.length === 6) {
       try {
@@ -144,54 +146,53 @@ export const AdminPage = () => {
       } catch (err) {}
     }
 
-    // Check default passcode fallback
-    if (passcode === 'admin123' || cleanCode === 'admin123') {
+    // Master Key for Dinesh Kumar E
+    if (passcode === 'Dinesh@2026' || cleanCode === 'Dinesh@2026') {
       setIsAuthenticated(true);
       return;
     }
 
-    setAuthError('Invalid Google Authenticator 6-digit code or passcode. Please check your app.');
+    setAuthError('Access Denied. Invalid Google Authenticator 6-digit code.');
   };
 
   if (!isAuthenticated) {
     return (
-      <div className="admin-lock-screen">
+      <div className="admin-lock-screen" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
         <div className="glass-card lock-card" style={{ maxWidth: '440px', width: '100%', padding: '2.5rem 2rem', textAlign: 'center' }}>
           <div className="badge badge-emerald" style={{ display: 'inline-flex', gap: '0.5rem', marginBottom: '1rem' }}>
             <ShieldCheck size={14} />
-            <span>2FA Authenticator Protected</span>
+            <span>Exclusive 2FA Google Authenticator</span>
           </div>
           
-          <h2 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '0.5rem' }}>Admin Authentication</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-            Enter 6-digit <strong>Google Authenticator Code</strong> or Admin Passcode below.
+          <h2 style={{ fontSize: '1.6rem', fontWeight: 800, marginBottom: '0.3rem' }}>Dinesh's Admin Portal</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '1.5rem' }}>
+            Open <strong>Google Authenticator</strong> on your phone and enter your live 6-digit code.
           </p>
 
           <form onSubmit={handleAdminAuth}>
-            <div style={{ marginBottom: '1rem', textAlign: 'left' }}>
-              <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
-                Google Authenticator Code (6-Digits)
+            <div style={{ marginBottom: '1.2rem', textAlign: 'left' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 500 }}>
+                Google Authenticator 6-Digit Code *
               </label>
-              <div style={{ position: 'relative' }}>
-                <input 
-                  type="text"
-                  maxLength={6}
-                  placeholder="e.g. 482910"
-                  value={totpCode}
-                  onChange={(e) => setTotpCode(e.target.value)}
-                  className="form-input"
-                  style={{ letterSpacing: '4px', fontSize: '1.2rem', textAlign: 'center', fontWeight: 'bold' }}
-                />
-              </div>
+              <input 
+                type="text"
+                maxLength={6}
+                placeholder="000 000"
+                value={totpCode}
+                onChange={(e) => setTotpCode(e.target.value)}
+                className="form-input"
+                style={{ letterSpacing: '6px', fontSize: '1.4rem', textAlign: 'center', fontWeight: 'bold', fontFamily: 'monospace' }}
+                autoFocus
+              />
             </div>
 
             <div style={{ marginBottom: '1.5rem', textAlign: 'left' }}>
-              <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
-                Or Admin Passcode (Default: admin123)
+              <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.3rem' }}>
+                Master Access Passcode (Backup)
               </label>
               <input 
                 type="password"
-                placeholder="Enter Passcode"
+                placeholder="Dinesh's Private Master Key"
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
                 className="form-input"
@@ -199,14 +200,14 @@ export const AdminPage = () => {
             </div>
 
             {authError && (
-              <div style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+              <div style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.6rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
                 {authError}
               </div>
             )}
 
             <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginBottom: '1rem' }}>
               <Unlock size={18} />
-              <span>Verify & Unlock CMS</span>
+              <span>Verify & Unlock Portal</span>
             </button>
           </form>
 
@@ -217,19 +218,19 @@ export const AdminPage = () => {
             style={{ width: '100%', justifyContent: 'center', gap: '0.5rem', fontSize: '0.85rem' }}
           >
             <QrCode size={16} />
-            <span>{showQrModal ? 'Hide Setup QR Code' : 'Scan Google Authenticator QR Code'}</span>
+            <span>{showQrModal ? 'Hide Authenticator Setup' : 'Scan Setup QR Code (First Time Only)'}</span>
           </button>
 
           {showQrModal && (
             <div style={{ marginTop: '1.5rem', padding: '1.2rem', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                Scan this QR code in <strong>Google Authenticator</strong> app on your mobile phone:
+                Scan with <strong>Google Authenticator</strong> app on phone:
               </p>
               <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '12px', display: 'inline-block' }}>
                 <QRCodeSVG value={otpAuthUrl} size={160} />
               </div>
               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.8rem', fontFamily: 'monospace' }}>
-                Secret: {totpSecret}
+                User: dineshelumalai2006@gmail.com
               </p>
             </div>
           )}
