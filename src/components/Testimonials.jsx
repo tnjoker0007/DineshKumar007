@@ -5,7 +5,7 @@ import { Quote, Star, Plus, CheckCircle2, MessageSquarePlus, X, Send } from 'luc
 
 export const Testimonials = () => {
   const { data, addTestimonial } = usePortfolio();
-  const testimonials = data.testimonials || [];
+  const testimonials = (data && Array.isArray(data?.testimonials)) ? data.testimonials : [];
 
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState('');
