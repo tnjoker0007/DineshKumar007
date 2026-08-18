@@ -13,6 +13,13 @@ export const Projects = () => {
     ? projects
     : projects.filter(p => p.category.toLowerCase().includes(activeCategory.toLowerCase()));
 
+  // Helper to verify if a valid external link was explicitly provided in Admin CMS
+  const isValidUrl = (url) => {
+    if (!url) return false;
+    const u = url.trim().toLowerCase();
+    return u.length > 0 && u !== '#' && u !== 'none' && !u.includes('example.com') && !u.includes('github.com/example');
+  };
+
   return (
     <section className="projects-section" id="projects-section">
       <div className="container">
@@ -39,70 +46,77 @@ export const Projects = () => {
 
         {/* Projects Grid */}
         <div className="projects-grid grid-3">
-          {filteredProjects.map((project) => (
-            <div 
-              key={project.id} 
-              className="glass-card project-card"
-              onClick={() => setSelectedProject(project)}
-            >
-              {/* Image Preview */}
-              <div className="project-image-box">
-                <img src={project.image} alt={project.title} className="project-img" />
-                <div className="project-overlay">
-                  <span className="btn-view-details">
-                    <span>View Case Details</span>
-                    <ArrowUpRight size={16} />
-                  </span>
+          {filteredProjects.map((project) => {
+            const hasLive = isValidUrl(project.liveUrl);
+            const hasGithub = isValidUrl(project.githubUrl);
+
+            return (
+              <div 
+                key={project.id} 
+                className="glass-card project-card"
+                onClick={() => setSelectedProject(project)}
+              >
+                {/* Image Preview */}
+                <div className="project-image-box">
+                  <img src={project.image} alt={project.title} className="project-img" />
+                  <div className="project-overlay">
+                    <span className="btn-view-details">
+                      <span>View Case Details</span>
+                      <ArrowUpRight size={16} />
+                    </span>
+                  </div>
+                  {project.featured && (
+                    <span className="badge-featured">Featured</span>
+                  )}
                 </div>
-                {project.featured && (
-                  <span className="badge-featured">Featured</span>
-                )}
+
+                {/* Card Body */}
+                <div className="project-body">
+                  <span className="project-category">{project.category}</span>
+                  <h3 className="project-title">{project.title}</h3>
+                  <p className="project-desc">{project.shortDesc}</p>
+
+                  {/* Tech Tags */}
+                  <div className="project-tags">
+                    {project.tags.slice(0, 4).map((tag, idx) => (
+                      <span key={idx} className="tag-item">{tag}</span>
+                    ))}
+                    {project.tags.length > 4 && (
+                      <span className="tag-item">+{project.tags.length - 4}</span>
+                    )}
+                  </div>
+
+                  {/* External Links: Render ONLY when added in Admin CMS */}
+                  {(hasLive || hasGithub) && (
+                    <div className="project-actions" onClick={(e) => e.stopPropagation()}>
+                      {hasLive && (
+                        <a 
+                          href={project.liveUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="link-icon-btn"
+                          title="Live Demo"
+                        >
+                          <ExternalLink size={16} />
+                        </a>
+                      )}
+                      {hasGithub && (
+                        <a 
+                          href={project.githubUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="link-icon-btn"
+                          title="Source Code"
+                        >
+                          <Github size={16} />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-
-              {/* Card Body */}
-              <div className="project-body">
-                <span className="project-category">{project.category}</span>
-                <h3 className="project-title">{project.title}</h3>
-                <p className="project-desc">{project.shortDesc}</p>
-
-                {/* Tech Tags */}
-                <div className="project-tags">
-                  {project.tags.slice(0, 4).map((tag, idx) => (
-                    <span key={idx} className="tag-item">{tag}</span>
-                  ))}
-                  {project.tags.length > 4 && (
-                    <span className="tag-item">+{project.tags.length - 4}</span>
-                  )}
-                </div>
-
-                {/* Actions */}
-                <div className="project-actions" onClick={(e) => e.stopPropagation()}>
-                  {project.liveUrl && (
-                    <a 
-                      href={project.liveUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="link-icon-btn"
-                      title="Live Demo"
-                    >
-                      <ExternalLink size={16} />
-                    </a>
-                  )}
-                  {project.githubUrl && (
-                    <a 
-                      href={project.githubUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="link-icon-btn"
-                      title="Source Code"
-                    >
-                      <Github size={16} />
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -130,30 +144,33 @@ export const Projects = () => {
                 </div>
               </div>
 
-              <div className="modal-actions">
-                {selectedProject.liveUrl && (
-                  <a 
-                    href={selectedProject.liveUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="btn btn-primary btn-sm"
-                  >
-                    <ExternalLink size={16} />
-                    <span>Visit Live Site</span>
-                  </a>
-                )}
-                {selectedProject.githubUrl && (
-                  <a 
-                    href={selectedProject.githubUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="btn btn-secondary btn-sm"
-                  >
-                    <Github size={16} />
-                    <span>View Repository</span>
-                  </a>
-                )}
-              </div>
+              {/* Modal External Action Buttons: Render ONLY when added in Admin CMS */}
+              {(isValidUrl(selectedProject.liveUrl) || isValidUrl(selectedProject.githubUrl)) && (
+                <div className="modal-actions">
+                  {isValidUrl(selectedProject.liveUrl) && (
+                    <a 
+                      href={selectedProject.liveUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="btn btn-primary btn-sm"
+                    >
+                      <ExternalLink size={16} />
+                      <span>Visit Live Site</span>
+                    </a>
+                  )}
+                  {isValidUrl(selectedProject.githubUrl) && (
+                    <a 
+                      href={selectedProject.githubUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="btn btn-secondary btn-sm"
+                    >
+                      <Github size={16} />
+                      <span>View Repository</span>
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

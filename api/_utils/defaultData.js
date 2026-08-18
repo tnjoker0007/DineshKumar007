@@ -33,8 +33,8 @@ export const defaultPortfolioData = {
       category: "AI & Web Apps",
       tags: ["React", "Node.js", "Python AI", "PostgreSQL", "TailwindCSS"],
       image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800",
-      liveUrl: "https://example.com/novacare",
-      githubUrl: "https://github.com/example/novacare",
+      liveUrl: "",
+      githubUrl: "",
       featured: true
     },
     {
@@ -45,8 +45,8 @@ export const defaultPortfolioData = {
       category: "Web App",
       tags: ["Java", "JavaScript", "HTML/CSS", "Team Leadership", "Agile"],
       image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&q=80&w=800",
-      liveUrl: "https://example.com/lti-project1",
-      githubUrl: "https://github.com/example/lti-project1",
+      liveUrl: "",
+      githubUrl: "",
       featured: true
     },
     {
@@ -57,8 +57,8 @@ export const defaultPortfolioData = {
       category: "Web App",
       tags: ["Java Tools", "DBMS", "Software Engineering", "Agile Workflows"],
       image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
-      liveUrl: "https://example.com/lti-project2",
-      githubUrl: "https://github.com/example/lti-project2",
+      liveUrl: "",
+      githubUrl: "",
       featured: true
     },
     {
@@ -69,8 +69,8 @@ export const defaultPortfolioData = {
       category: "Hardware & IoT",
       tags: ["IoT", "Hardware", "Python", "EV Technology", "Sensors"],
       image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=800",
-      liveUrl: "https://example.com/ev-hardware",
-      githubUrl: "https://github.com/example/ev-hardware",
+      liveUrl: "",
+      githubUrl: "",
       featured: false
     },
     {
@@ -81,8 +81,8 @@ export const defaultPortfolioData = {
       category: "Creative & Marketing",
       tags: ["Digital Marketing", "Video Editing", "Vector Graphics", "Social Media"],
       image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800",
-      liveUrl: "https://example.com/gsc-marketing",
-      githubUrl: "https://github.com/example/gsc-marketing",
+      liveUrl: "",
+      githubUrl: "",
       featured: false
     },
     {
@@ -93,8 +93,8 @@ export const defaultPortfolioData = {
       category: "AI & Cybersecurity",
       tags: ["Cybersecurity Tools", "Python", "Network Scanning", "AI Analysis"],
       image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=800",
-      liveUrl: "https://example.com/sec-tools",
-      githubUrl: "https://github.com/example/sec-tools",
+      liveUrl: "",
+      githubUrl: "",
       featured: false
     }
   ],
