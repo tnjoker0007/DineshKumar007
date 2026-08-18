@@ -1,27 +1,18 @@
 import { verifySync } from 'otplib';
-import { 
-  getEnv, 
-  parseCookies, 
-  verifyToken, 
-  createCookieHeader, 
-  signToken, 
-  clearFailedAttempts,
-  recordFailedAttempt
-} from '../_utils/auth.js';
+
+const TOTP_SECRET = 'DINESHKUMAR2FASECURITYKEY2727KEY';
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
 
-  const cookies = parseCookies(req);
-  const preAuthToken = cookies.pre_auth_token;
-  const { sessionSecret, totpSecret, adminEmail } = getEnv();
-
-  // Validate pre_auth_token
-  const preAuth = verifyToken(preAuthToken, sessionSecret);
-  if (!preAuth || preAuth.step !== '2fa_pending') {
-    return res.status(401).json({ error: 'Session expired. Please enter your password first.' });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { totpCode } = req.body || {};
@@ -31,43 +22,33 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Please enter a 6-digit Google Authenticator code.' });
   }
 
-  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
+  let isValid = false;
 
-  // Check TOTP code strictly using otplib verifySync
-  let isValidTotp = false;
-  try {
-    const result = verifySync({ secret: totpSecret, token: cleanCode, window: 2 });
-    isValidTotp = !!(result && result.valid);
-  } catch (err) {
-    isValidTotp = false;
-  }
-
-  // Backup Master Key Override
   if (cleanCode === 'Dinesh@2026') {
-    isValidTotp = true;
+    isValid = true;
+  } else {
+    try {
+      const result = verifySync({ secret: TOTP_SECRET, token: cleanCode, window: 2 });
+      isValid = !!(result && result.valid);
+    } catch (err) {
+      isValid = false;
+    }
   }
 
-  if (!isValidTotp) {
-    recordFailedAttempt(clientIp);
-    return res.status(401).json({ error: 'Invalid or expired 6-digit Google Authenticator code.' });
+  if (!isValid) {
+    return res.status(401).json({ error: 'Access Denied: Invalid 6-digit Google Authenticator code.' });
   }
 
-  // Cleared failed attempts on clean login
-  clearFailedAttempts(clientIp);
-
-  // Issue full HTTP-Only admin_session cookie (24 hours)
-  const sessionToken = signToken({ email: adminEmail, role: 'admin' }, sessionSecret, '24h');
-  
-  // Set admin_session cookie and clear pre_auth_token cookie
-  const sessionCookie = createCookieHeader('admin_session', sessionToken, 86400);
-  const clearPreAuthCookie = createCookieHeader('pre_auth_token', '', 0);
-
-  res.setHeader('Set-Cookie', [sessionCookie, clearPreAuthCookie]);
+  // Set admin_session cookie (24h) and clear pre_auth_token
+  res.setHeader('Set-Cookie', [
+    'admin_session=authenticated; Path=/; HttpOnly; SameSite=Strict; Max-Age=86400',
+    'pre_auth_token=; Path=/; HttpOnly; Max-Age=0'
+  ]);
 
   return res.status(200).json({
     success: true,
     authenticated: true,
-    user: { email: adminEmail },
+    user: { email: 'dineshelumalai2006@gmail.com' },
     message: '2FA authentication successful. Admin CMS unlocked.'
   });
 }
