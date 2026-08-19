@@ -4,6 +4,23 @@ const UPSTASH_URL = process.env.KV_REST_API_URL || 'https://ethical-kangaroo-158
 const UPSTASH_TOKEN = process.env.KV_REST_API_TOKEN || 'gQAAAAAAAmypAAIgcDIxNWFkNDczZWZlMjI0ZTRhOTY5ZjU2ODlkZmEyNjliZQ';
 const REDIS_KEY = 'dinesh_portfolio_global_data_v1';
 
+const ensureServerDataDefaults = (raw) => {
+  if (!raw || typeof raw !== 'object') return defaultPortfolioData;
+  return {
+    ...defaultPortfolioData,
+    ...raw,
+    personalInfo: { ...defaultPortfolioData.personalInfo, ...(raw.personalInfo || {}) },
+    projects: Array.isArray(raw.projects) ? raw.projects : defaultPortfolioData.projects,
+    certificates: Array.isArray(raw.certificates) ? raw.certificates : defaultPortfolioData.certificates,
+    skills: Array.isArray(raw.skills) ? raw.skills : defaultPortfolioData.skills,
+    experience: Array.isArray(raw.experience) ? raw.experience : defaultPortfolioData.experience,
+    education: Array.isArray(raw.education) ? raw.education : defaultPortfolioData.education,
+    services: Array.isArray(raw.services) ? raw.services : defaultPortfolioData.services,
+    testimonials: Array.isArray(raw.testimonials) ? raw.testimonials : defaultPortfolioData.testimonials,
+    inquiries: Array.isArray(raw.inquiries) ? raw.inquiries : defaultPortfolioData.inquiries
+  };
+};
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -29,7 +46,7 @@ export default async function handler(req, res) {
           return res.status(200).json({
             success: true,
             source: 'upstash_rest_cloud',
-            data: parsed
+            data: ensureServerDataDefaults(parsed)
           });
         }
       }
