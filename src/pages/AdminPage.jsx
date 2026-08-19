@@ -62,6 +62,29 @@ const compressImageFile = (file, maxWidth = 500, maxHeight = 500, quality = 0.85
   });
 };
 
+const ADMIN_SESSION_KEY = 'dinesh_admin_session_expiry_v2';
+const SESSION_DURATION_MS = 5 * 60 * 1000; // 5 minutes session timeout
+
+const isSessionActive = () => {
+  try {
+    const expiry = sessionStorage.getItem(ADMIN_SESSION_KEY) || localStorage.getItem(ADMIN_SESSION_KEY);
+    return expiry && Date.now() < parseInt(expiry, 10);
+  } catch (e) {
+    return false;
+  }
+};
+
+const renewAdminSession = () => {
+  const newExpiry = Date.now() + SESSION_DURATION_MS;
+  sessionStorage.setItem(ADMIN_SESSION_KEY, newExpiry.toString());
+  localStorage.setItem(ADMIN_SESSION_KEY, newExpiry.toString());
+};
+
+const clearAdminSession = () => {
+  sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  localStorage.removeItem(ADMIN_SESSION_KEY);
+};
+
 export const AdminPage = () => {
   const { 
     data, 
@@ -77,8 +100,8 @@ export const AdminPage = () => {
     resetToDefault 
   } = usePortfolio();
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authStep, setAuthStep] = useState('login'); // 'login' | '2fa' | 'authenticated'
+  const [isAuthenticated, setIsAuthenticated] = useState(isSessionActive);
+  const [authStep, setAuthStep] = useState(() => (isSessionActive() ? 'authenticated' : 'login')); // 'login' | '2fa' | 'authenticated'
   const [email, setEmail] = useState('dineshelumalai2006@gmail.com');
   const [password, setPassword] = useState('');
   const [totpCode, setTotpCode] = useState('');
@@ -98,92 +121,18 @@ export const AdminPage = () => {
     }
   }, [data.personalInfo]);
 
-  // Project Form State
-  const [showProjectModal, setShowProjectModal] = useState(false);
-  const [newProject, setNewProject] = useState({
-    title: '',
-    shortDesc: '',
-    longDesc: '',
-    category: 'Web App',
-    tags: 'React, Node.js',
-    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800',
-    liveUrl: '',
-    githubUrl: '',
-    featured: false
-  });
-
-  // Cert Form State
-  const [showCertModal, setShowCertModal] = useState(false);
-  const [newCert, setNewCert] = useState({
-    title: '',
-    issuer: '',
-    date: '',
-    credentialId: '',
-    verifyUrl: '',
-    badgeImage: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&q=80&w=300',
-    skills: 'Cloud Architecture, React'
-  });
-
-  // Skill Form State
-  const [showSkillModal, setShowSkillModal] = useState(false);
-  const [newSkill, setNewSkill] = useState({
-    name: '',
-    category: 'Frontend',
-    level: 85
-  });
-
-  const triggerToast = () => {
-    setSaveToast(true);
-    setTimeout(() => setSaveToast(false), 3000);
-  };
-
-  const handleBioSubmit = (e) => {
-    e.preventDefault();
-    updatePersonalInfo(bioForm);
-    triggerToast();
-  };
-
-  const handleAddProject = (e) => {
-    e.preventDefault();
-    if (!newProject.title) return;
-    addProject(newProject);
-    setShowProjectModal(false);
-    setNewProject({
-      title: '', shortDesc: '', longDesc: '', category: 'Web App',
-      tags: 'React, Node.js', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800',
-      liveUrl: '', githubUrl: '', featured: false
-    });
-    triggerToast();
-  };
-
-  const handleAddCert = (e) => {
-    e.preventDefault();
-    if (!newCert.title) return;
-    addCertificate(newCert);
-    setShowCertModal(false);
-    setNewCert({
-      title: '', issuer: '', date: '', credentialId: '', verifyUrl: '',
-      badgeImage: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&q=80&w=300',
-      skills: 'Cloud Architecture, React'
-    });
-    triggerToast();
-  };
-
-  const handleAddSkill = (e) => {
-    e.preventDefault();
-    if (!newSkill.name) return;
-    addSkill(newSkill);
-    setShowSkillModal(false);
-    setNewSkill({ name: '', category: 'Frontend', level: 85 });
-    triggerToast();
-  };
-
-  // Ensure Admin Portal is LOCKED by default whenever accessed
+  // Check 5-minute session persistence on mount & refresh session
   React.useEffect(() => {
-    setIsAuthenticated(false);
-    setAuthStep('login');
-    setPassword('');
-    setTotpCode('');
+    if (isSessionActive()) {
+      setIsAuthenticated(true);
+      setAuthStep('authenticated');
+      renewAdminSession();
+    } else {
+      setIsAuthenticated(false);
+      setAuthStep('login');
+      setPassword('');
+      setTotpCode('');
+    }
   }, []);
 
   const handlePasswordStep = async (e) => {
@@ -227,6 +176,7 @@ export const AdminPage = () => {
 
     // 1. Instant Master Backup Passcode Check (0ms latency)
     if (cleanCode === 'Dinesh@2026') {
+      renewAdminSession();
       setIsAuthenticated(true);
       setAuthStep('authenticated');
       return;
@@ -241,6 +191,7 @@ export const AdminPage = () => {
       });
 
       if (result && result.valid) {
+        renewAdminSession();
         setIsAuthenticated(true);
         setAuthStep('authenticated');
         return;
@@ -260,6 +211,7 @@ export const AdminPage = () => {
       if (res.ok) {
         const data = await res.json();
         if (data.authenticated) {
+          renewAdminSession();
           setIsAuthenticated(true);
           setAuthStep('authenticated');
           return;
@@ -276,6 +228,7 @@ export const AdminPage = () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
     } catch (err) {}
+    clearAdminSession();
     setIsAuthenticated(false);
     setAuthStep('login');
     setTotpCode('');

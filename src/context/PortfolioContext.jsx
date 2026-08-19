@@ -193,7 +193,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        projects: [newProject, ...prev.projects]
+        projects: [newProject, ...prev.projects],
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -204,7 +205,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        projects: prev.projects.map((p) => (p.id === id ? { ...p, ...updatedFields } : p))
+        projects: prev.projects.map((p) => (p.id === id ? { ...p, ...updatedFields } : p)),
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -215,7 +217,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        projects: prev.projects.filter((p) => p.id !== id)
+        projects: prev.projects.filter((p) => p.id !== id),
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -231,7 +234,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        certificates: [newCert, ...prev.certificates]
+        certificates: [newCert, ...prev.certificates],
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -242,7 +246,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        certificates: prev.certificates.map((c) => (c.id === id ? { ...c, ...updatedFields } : c))
+        certificates: prev.certificates.map((c) => (c.id === id ? { ...c, ...updatedFields } : c)),
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -253,7 +258,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        certificates: prev.certificates.filter((c) => c.id !== id)
+        certificates: prev.certificates.filter((c) => c.id !== id),
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -264,7 +270,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        skills: [...prev.skills, skill]
+        skills: [...prev.skills, skill],
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -275,7 +282,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        skills: prev.skills.filter((_, idx) => idx !== index)
+        skills: prev.skills.filter((_, idx) => idx !== index),
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -291,7 +299,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        experience: [newExp, ...prev.experience]
+        experience: [newExp, ...prev.experience],
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -302,7 +311,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        experience: prev.experience.filter((e) => e.id !== id)
+        experience: prev.experience.filter((e) => e.id !== id),
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -318,7 +328,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        inquiries: [newInquiry, ...(prev.inquiries || [])]
+        inquiries: [newInquiry, ...(prev.inquiries || [])],
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -329,7 +340,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        inquiries: (prev.inquiries || []).filter((inq) => inq.id !== id)
+        inquiries: (prev.inquiries || []).filter((inq) => inq.id !== id),
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -347,7 +359,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        testimonials: [newItem, ...(prev.testimonials || [])]
+        testimonials: [newItem, ...(prev.testimonials || [])],
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -358,7 +371,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        testimonials: (prev.testimonials || []).filter((t) => t.id !== id)
+        testimonials: (prev.testimonials || []).filter((t) => t.id !== id),
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;
@@ -366,7 +380,12 @@ export const PortfolioProvider = ({ children }) => {
   };
 
   const resetToDefault = () => {
-    setData(defaultPortfolioData);
+    const defaultDataWithTimestamp = {
+      ...defaultPortfolioData,
+      lastUpdated: Date.now()
+    };
+    setData(defaultDataWithTimestamp);
+    saveGlobalData(defaultDataWithTimestamp);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
   };
 
