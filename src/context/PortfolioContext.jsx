@@ -38,13 +38,42 @@ export const PortfolioProvider = ({ children }) => {
     return defaultPortfolioData;
   });
 
+  // Helper to resolve initial page from browser URL
+  const getInitialPageFromUrl = () => {
+    if (typeof window === 'undefined') return 'home';
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes('certificat')) return 'certificates';
+    if (path.includes('hire')) return 'hire';
+    if (path.includes('admin')) return 'admin';
+    return 'home';
+  };
+
   // Active theme (dark/light)
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem(THEME_STORAGE_KEY) || 'dark';
   });
 
-  // Current page routing: 'home', 'certificates', 'hire', 'admin'
-  const [currentPage, setCurrentPage] = useState('home');
+  // Current page routing synced with browser URL: 'home', 'certificates', 'hire', 'admin'
+  const [currentPage, setCurrentPageState] = useState(getInitialPageFromUrl);
+
+  const setCurrentPage = (page) => {
+    setCurrentPageState(page);
+    if (typeof window !== 'undefined') {
+      const targetPath = page === 'home' ? '/' : `/${page}`;
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState({}, '', targetPath);
+      }
+    }
+  };
+
+  // Sync browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPageState(getInitialPageFromUrl());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Selected project modal state
   const [selectedProject, setSelectedProject] = useState(null);
