@@ -1,18 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 
-const CODE_SNIPPETS = [
-  "public class DineshKumar { public static void main() { System.out.println('Team Lead @ LTI'); } }",
-  "def async_pipeline(stream: Stream) -> JSON: return await stream.transform(mode='AI_IoT')",
-  "const [portfolio, setPortfolio] = useState({ owner: 'Dinesh Kumar E', certs: 22, score: '84%' });",
-  "SELECT id, title, issuer, verify_url FROM credentials WHERE status = 'VERIFIED_OK';",
-  "void setup() { Serial.begin(115200); WiFi.begin(STATION_SSID, PASS); initIoTCloud(); }",
-  "interface SoftwareEngineer { name: string; skills: string[]; iotEnabled: boolean; }",
-  "<div className='glass-card glow-border backdrop-blur flex items-center'>",
-  "fetch('/api/admin/data').then(res => res.json()).then(renderLivePortfolio);",
-  "@SpringBootApplication public class LtiTechPlatform { @Autowired Service cloudService; }",
-  "import torch, numpy as np; model = Transformer.from_pretrained('deepmind/antigravity');",
-  "async function deployProduction() { await vercel.deploy({ branch: 'main' }); }",
-  "const ioTGateway = new SmartSensors({ frequency: '5GHz', protocol: 'MQTT' });"
+const DUMMY_CODE_SNIPPETS = [
+  "01001001 01101110 01110100 01100101 01101100 01101100 01101001 01100111 01100101 01101110 01100011 01100101",
+  "function computeMatrix(x, y, z) { return (x * 0x1f + y * 0x3d + z) ^ 0xff; }",
+  "const calculateDistance = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));",
+  "if (node.isLeaf) { processBuffer(node.value); return node.next; }",
+  "struct QuantumNode { float amplitude; uint32_t frequency; bool active; };",
+  "<g transform='translate(50, 50)'><circle r='40' stroke='cyan' strokeWidth='2' /></g>",
+  "std::vector<uint64_t> buffer = parseStreamData(rawInput, 1024);",
+  "for (let i = 0; i < 256; i++) { hash = (hash << 5) - hash + i; }",
+  "import { useEffect, useState, useRef } from 'react';",
+  "SELECT id, hash_key, created_at FROM system_logs WHERE status = 200;",
+  "void processInterrupt() { volatile uint8_t state = READ_REG(); }",
+  "export default function RenderPipeline({ nodes, edges }) { return <Canvas /> }"
 ];
 
 export const LiveCodeRainBg = () => {
@@ -43,7 +43,7 @@ export const LiveCodeRainBg = () => {
       x: (i * colSpacing) + 20,
       y: Math.random() * canvas.height,
       speed: 0.5 + Math.random() * 0.5,
-      snippetIndex: Math.floor(Math.random() * CODE_SNIPPETS.length),
+      snippetIndex: Math.floor(Math.random() * DUMMY_CODE_SNIPPETS.length),
       charIndex: Math.floor(Math.random() * 20),
       color: colors[i % colors.length],
       opacity: 0.15 + Math.random() * 0.1
@@ -54,12 +54,12 @@ export const LiveCodeRainBg = () => {
       ctx.font = `600 ${fontSize}px "Fira Code", monospace`;
 
       columns.forEach((col) => {
-        const fullSnippet = CODE_SNIPPETS[col.snippetIndex];
+        const fullSnippet = DUMMY_CODE_SNIPPETS[col.snippetIndex];
         col.charIndex += 0.12;
 
         if (col.charIndex >= fullSnippet.length) {
           col.charIndex = 0;
-          col.snippetIndex = (col.snippetIndex + 1) % CODE_SNIPPETS.length;
+          col.snippetIndex = (col.snippetIndex + 1) % DUMMY_CODE_SNIPPETS.length;
           col.y = -30;
         }
 

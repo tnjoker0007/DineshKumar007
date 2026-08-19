@@ -16,16 +16,18 @@ import { CustomCursor } from './components/CustomCursor';
 import { ScrollProgressBar } from './components/ScrollProgressBar';
 import { LiveCodeRainBg } from './components/LiveCodeRainBg';
 import { GlassCardSpotlight } from './components/GlassCardSpotlight';
+import { StickyLogo } from './components/StickyLogo';
 
 const MainContent = () => {
   const { currentPage } = usePortfolio();
 
   return (
     <div className="app-layout">
-      {/* Interactive Custom Glowing Cursor, Scroll Progress & Glass Card Spotlight */}
+      {/* Interactive Custom Glowing Cursor, Scroll Progress, Spotlight & Sticky Logo */}
       <CustomCursor />
       <ScrollProgressBar />
       <GlassCardSpotlight />
+      <StickyLogo />
 
       {/* Live Animated Multi-Language Code Streams Backdrop (Synthesized/Matrix Style) */}
       <LiveCodeRainBg />
