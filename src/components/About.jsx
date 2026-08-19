@@ -1,6 +1,7 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { User, Award, GraduationCap, Heart, Zap, ShieldCheck, Mail, Send } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export const About = () => {
   const { data, setCurrentPage } = usePortfolio();
@@ -15,17 +16,20 @@ export const About = () => {
   return (
     <section className="about-section" id="about-section">
       <div className="container">
-        <div className="section-header">
-          <div className="badge badge-glow">
-            <User size={14} />
-            <span>About Me</span>
+        <ScrollReveal animation="slide-up">
+          <div className="section-header">
+            <div className="badge badge-glow">
+              <User size={14} />
+              <span>About Me</span>
+            </div>
+            <h2 className="section-title">Driven by Innovation, Defined by Quality</h2>
           </div>
-          <h2 className="section-title">Driven by Innovation, Defined by Quality</h2>
-        </div>
+        </ScrollReveal>
 
         <div className="about-grid">
           {/* Left: Detailed Story */}
-          <div className="glass-card about-card">
+          <ScrollReveal animation="slide-left">
+            <div className="glass-card about-card">
             <h3 className="about-heading">Engineering & Design Journey</h3>
             <p className="about-text">
               I am a Senior Software Engineer and UI/UX Designer dedicated to building seamless digital software. Over the past 6+ years, I've collaborated with fast-growing startups and global enterprises to take complex product visions from initial whiteboard wireframes to production cloud environments.
@@ -63,6 +67,7 @@ export const About = () => {
               </button>
             </div>
           </div>
+          </ScrollReveal>
 
           {/* Right: Core Values & Education */}
           <div className="about-secondary-col">
@@ -71,31 +76,35 @@ export const About = () => {
               {coreValues.map((val, idx) => {
                 const Icon = val.icon;
                 return (
-                  <div key={idx} className="glass-card value-item">
-                    <div className="value-icon-box">
-                      <Icon size={20} />
+                  <ScrollReveal key={idx} delay={idx * 140} animation="slide-right">
+                    <div className="glass-card value-item">
+                      <div className="value-icon-box">
+                        <Icon size={20} />
+                      </div>
+                      <div>
+                        <h4 className="value-title">{val.title}</h4>
+                        <p className="value-desc">{val.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="value-title">{val.title}</h4>
-                      <p className="value-desc">{val.desc}</p>
-                    </div>
-                  </div>
+                  </ScrollReveal>
                 );
               })}
             </div>
 
             {/* Education Card */}
             {education && education.length > 0 && (
-              <div className="glass-card edu-card">
-                <div className="edu-header">
-                  <GraduationCap size={22} className="edu-icon" />
-                  <div>
-                    <h4 className="edu-degree">{education[0].degree}</h4>
-                    <span className="edu-school">{education[0].institution} ({education[0].period})</span>
+              <ScrollReveal delay={300} animation="pop-up">
+                <div className="glass-card edu-card">
+                  <div className="edu-header">
+                    <GraduationCap size={22} className="edu-icon" />
+                    <div>
+                      <h4 className="edu-degree">{education[0].degree}</h4>
+                      <span className="edu-school">{education[0].institution} ({education[0].period})</span>
+                    </div>
                   </div>
+                  <p className="edu-details">{education[0].details}</p>
                 </div>
-                <p className="edu-details">{education[0].details}</p>
-              </div>
+              </ScrollReveal>
             )}
           </div>
         </div>

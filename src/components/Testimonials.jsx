@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import confetti from 'canvas-confetti';
 import { Quote, Star, Plus, CheckCircle2, MessageSquarePlus, X, Send } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export const Testimonials = () => {
   const { data, addTestimonial } = usePortfolio();
@@ -49,27 +50,29 @@ export const Testimonials = () => {
   return (
     <section className="testimonials-section">
       <div className="container">
-        <div className="testimonials-header-row">
-          <div className="section-header" style={{ marginBottom: 0 }}>
-            <div className="badge badge-glow">
-              <Quote size={14} />
-              <span>Recommendations & Feedback</span>
+        <ScrollReveal animation="slide-up">
+          <div className="testimonials-header-row">
+            <div className="section-header" style={{ marginBottom: 0 }}>
+              <div className="badge badge-glow">
+                <Quote size={14} />
+                <span>Recommendations & Feedback</span>
+              </div>
+              <h2 className="section-title">What Leaders & Clients Say About Dinesh</h2>
+              <p className="page-intro" style={{ margin: '0.4rem 0 0' }}>
+                Real feedback and recommendations from team members, project leaders, and clients.
+              </p>
             </div>
-            <h2 className="section-title">What Leaders & Clients Say About Dinesh</h2>
-            <p className="page-intro" style={{ margin: '0.4rem 0 0' }}>
-              Real feedback and recommendations from team members, project leaders, and clients.
-            </p>
-          </div>
 
-          <button 
-            className="btn btn-primary"
-            onClick={() => setShowModal(true)}
-            style={{ gap: '0.5rem', whiteSpace: 'nowrap' }}
-          >
-            <Plus size={18} />
-            <span>Add Recommendation</span>
-          </button>
-        </div>
+            <button 
+              className="btn btn-primary"
+              onClick={() => setShowModal(true)}
+              style={{ gap: '0.5rem', whiteSpace: 'nowrap' }}
+            >
+              <Plus size={18} />
+              <span>Add Recommendation</span>
+            </button>
+          </div>
+        </ScrollReveal>
 
         {/* Success Toast */}
         {successToast && (
@@ -92,28 +95,30 @@ export const Testimonials = () => {
           </div>
         ) : (
           <div className="testimonials-grid grid-3">
-            {testimonials.map((item) => (
-              <div key={item.id} className="glass-card testimonial-card">
-                <div className="stars-row">
-                  {[...Array(item.stars || 5)].map((_, i) => (
-                    <Star key={i} size={16} className="star-icon" />
-                  ))}
-                </div>
+            {testimonials.map((item, idx) => (
+              <ScrollReveal key={item.id} delay={idx * 120} animation="pop-up">
+                <div className="glass-card testimonial-card">
+                  <div className="stars-row">
+                    {[...Array(item.stars || 5)].map((_, i) => (
+                      <Star key={i} size={16} className="star-icon" />
+                    ))}
+                  </div>
 
-                <p className="testimonial-text">"{item.content}"</p>
+                  <p className="testimonial-text">"{item.content}"</p>
 
-                <div className="client-info">
-                  <img 
-                    src={item.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=6366f1&color=fff`} 
-                    alt={item.name} 
-                    className="client-avatar" 
-                  />
-                  <div>
-                    <h4 className="client-name">{item.name}</h4>
-                    <span className="client-role">{item.role}{item.company ? `, ${item.company}` : ''}</span>
+                  <div className="client-info">
+                    <img 
+                      src={item.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=6366f1&color=fff`} 
+                      alt={item.name} 
+                      className="client-avatar" 
+                    />
+                    <div>
+                      <h4 className="client-name">{item.name}</h4>
+                      <span className="client-role">{item.role}{item.company ? `, ${item.company}` : ''}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         )}

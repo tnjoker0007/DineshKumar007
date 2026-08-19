@@ -1,6 +1,7 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Briefcase, Calendar, MapPin, CheckCircle2 } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export const Experience = () => {
   const { data } = usePortfolio();
@@ -9,20 +10,23 @@ export const Experience = () => {
   return (
     <section className="experience-section" id="experience-section">
       <div className="container">
-        <div className="section-header">
-          <div className="badge badge-glow">
-            <Briefcase size={14} />
-            <span>Career Path</span>
+        <ScrollReveal animation="slide-up">
+          <div className="section-header">
+            <div className="badge badge-glow">
+              <Briefcase size={14} />
+              <span>Career Path</span>
+            </div>
+            <h2 className="section-title">Work Experience & Timeline</h2>
           </div>
-          <h2 className="section-title">Work Experience & Timeline</h2>
-        </div>
+        </ScrollReveal>
 
         <div className="timeline-container">
           {experience.map((item, idx) => (
-            <div key={item.id || idx} className="timeline-item">
-              <div className="timeline-dot"></div>
+            <ScrollReveal key={item.id || idx} delay={idx * 160} animation={idx % 2 === 0 ? "slide-left" : "slide-right"}>
+              <div className="timeline-item">
+                <div className="timeline-dot"></div>
 
-              <div className="glass-card timeline-card">
+                <div className="glass-card timeline-card">
                 <div className="timeline-meta">
                   <span className="timeline-role">{item.role}</span>
                   <span className="timeline-company">@ {item.company}</span>
@@ -56,7 +60,8 @@ export const Experience = () => {
                 )}
               </div>
             </div>
-          ))}
+          </ScrollReveal>
+        ))}
         </div>
       </div>
 
