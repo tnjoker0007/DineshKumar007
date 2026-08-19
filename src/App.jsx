@@ -12,12 +12,18 @@ import { Footer } from './components/Footer';
 import { CertificatesPage } from './pages/CertificatesPage';
 import { HiringPage } from './pages/HiringPage';
 import { AdminPage } from './pages/AdminPage';
+import { CustomCursor } from './components/CustomCursor';
+import { ScrollProgressBar } from './components/ScrollProgressBar';
 
 const MainContent = () => {
   const { currentPage } = usePortfolio();
 
   return (
     <div className="app-layout">
+      {/* Interactive Custom Glowing Cursor & Top Scroll Progress Bar */}
+      <CustomCursor />
+      <ScrollProgressBar />
+
       {/* Animated Ambient Glass Background Orbs & Mesh */}
       <div className="ambient-glass-bg">
         <div className="glass-orb orb-1"></div>
