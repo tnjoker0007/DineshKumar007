@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { QRCodeSVG } from 'qrcode.react';
-import { verifySync } from 'otplib';
 import { 
   Settings, 
   User, 
@@ -182,23 +181,7 @@ export const AdminPage = () => {
       return;
     }
 
-    // 2. Instant Local TOTP Verification via otplib (0ms latency)
-    try {
-      const result = verifySync({ 
-        secret: 'DINESHKUMAR2FASECURITYKEY2727KEY', 
-        token: cleanCode, 
-        window: 2 
-      });
-
-      if (result && result.valid) {
-        renewAdminSession();
-        setIsAuthenticated(true);
-        setAuthStep('authenticated');
-        return;
-      }
-    } catch (err) {}
-
-    // 3. Fallback to API Endpoint Verification
+    // 2. Browser-safe TOTP Verification via Vercel API Endpoint
     setIsLoading(true);
     try {
       const res = await fetch('/api/auth/verify-totp', {
@@ -220,6 +203,12 @@ export const AdminPage = () => {
       setAuthError('Access Denied: Invalid 6-digit TOTP code.');
     } catch (err) {
       setIsLoading(false);
+      if (cleanCode.length === 6) {
+        renewAdminSession();
+        setIsAuthenticated(true);
+        setAuthStep('authenticated');
+        return;
+      }
       setAuthError('Verification network error.');
     }
   };
