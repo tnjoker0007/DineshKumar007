@@ -1,21 +1,13 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download, FileSpreadsheet } from 'lucide-react';
+import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download, FileSpreadsheet, FileCheck } from 'lucide-react';
 
 export const CertificatesPage = () => {
   const { data } = usePortfolio();
-  const { certificates } = data;
+  const certificates = Array.isArray(data?.certificates) ? data.certificates : [];
   const [selectedCert, setSelectedCert] = useState(null);
 
   const isPdf = (url) => url && (url.toLowerCase().endsWith('.pdf') || url.includes('.pdf'));
-
-  const getGooglePdfViewerUrl = (pdfPath) => {
-    if (!pdfPath) return '';
-    const fullUrl = pdfPath.startsWith('http') 
-      ? pdfPath 
-      : `https://dinesh-kumar007.vercel.app${pdfPath.startsWith('/') ? '' : '/'}${pdfPath}`;
-    return `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(fullUrl)}`;
-  };
 
   return (
     <div className="certificates-page">
@@ -33,64 +25,69 @@ export const CertificatesPage = () => {
 
         {/* Certificates Grid */}
         <div className="certificates-grid grid-2">
-          {certificates.map((cert) => (
-            <div 
-              key={cert.id} 
-              className="glass-card cert-card"
-              onClick={() => setSelectedCert(cert)}
-            >
-              <div className="cert-header">
-                <div className="cert-icon-box">
-                  <Award size={24} className="cert-award-icon" />
+          {certificates.map((cert) => {
+            const skillsList = Array.isArray(cert?.skills) ? cert.skills : [];
+            return (
+              <div 
+                key={cert.id} 
+                className="glass-card cert-card"
+                onClick={() => setSelectedCert(cert)}
+              >
+                <div className="cert-header">
+                  <div className="cert-icon-box">
+                    <Award size={24} className="cert-award-icon" />
+                  </div>
+
+                  <div className="cert-meta">
+                    <span className="cert-issuer">{cert.issuer}</span>
+                    <h3 className="cert-title">{cert.title}</h3>
+                  </div>
                 </div>
 
-                <div className="cert-meta">
-                  <span className="cert-issuer">{cert.issuer}</span>
-                  <h3 className="cert-title">{cert.title}</h3>
+                <div className="cert-details">
+                  <div className="cert-detail-item">
+                    <Calendar size={14} />
+                    <span>Issued: {cert.date}</span>
+                  </div>
+                  <div className="cert-detail-item">
+                    <Key size={14} />
+                    <span>ID: {cert.credentialId}</span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="cert-details">
-                <div className="cert-detail-item">
-                  <Calendar size={14} />
-                  <span>Issued: {cert.date}</span>
-                </div>
-                <div className="cert-detail-item">
-                  <Key size={14} />
-                  <span>ID: {cert.credentialId}</span>
-                </div>
-              </div>
-
-              {/* Skills Tags */}
-              <div className="cert-skills">
-                {cert.skills.map((skill, idx) => (
-                  <span key={idx} className="cert-skill-tag">{skill}</span>
-                ))}
-              </div>
-
-              <div className="cert-actions" onClick={(e) => e.stopPropagation()}>
-                {cert.verifyUrl && (
-                  <a 
-                    href={cert.verifyUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="btn btn-secondary btn-sm"
-                  >
-                    <ExternalLink size={14} />
-                    <span>Verify Credential</span>
-                  </a>
+                {/* Skills Tags */}
+                {skillsList.length > 0 && (
+                  <div className="cert-skills">
+                    {skillsList.map((skill, idx) => (
+                      <span key={idx} className="cert-skill-tag">{skill}</span>
+                    ))}
+                  </div>
                 )}
-                <button 
-                  className="btn btn-primary btn-sm"
-                  onClick={() => setSelectedCert(cert)}
-                  style={{ gap: '0.4rem' }}
-                >
-                  <Eye size={14} />
-                  <span>View Details & Certificate</span>
-                </button>
+
+                <div className="cert-actions" onClick={(e) => e.stopPropagation()}>
+                  {cert.verifyUrl && (
+                    <a 
+                      href={cert.verifyUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="btn btn-secondary btn-sm"
+                    >
+                      <ExternalLink size={14} />
+                      <span>Verify Credential</span>
+                    </a>
+                  )}
+                  <button 
+                    className="btn btn-primary btn-sm"
+                    onClick={() => setSelectedCert(cert)}
+                    style={{ gap: '0.4rem' }}
+                  >
+                    <Eye size={14} />
+                    <span>View Details & Certificate</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -102,17 +99,34 @@ export const CertificatesPage = () => {
               <X size={20} />
             </button>
 
-            {/* Render Full Res Certificate Document (Universal Viewer for Mobile & Desktop) */}
+            {/* Document / Certificate Header Banner */}
             <div className="modal-cert-viewer">
               {selectedCert.badgeImage ? (
                 isPdf(selectedCert.badgeImage) ? (
-                  <div className="pdf-iframe-container">
-                    <iframe 
-                      src={getGooglePdfViewerUrl(selectedCert.badgeImage)}
-                      title={selectedCert.title}
-                      className="modal-pdf-iframe"
-                    />
-                    <div className="pdf-overlay-bar">
+                  <div className="pdf-viewer-box">
+                    <object 
+                      data={`${selectedCert.badgeImage}#toolbar=1&navpanes=0&scrollbar=1`} 
+                      type="application/pdf"
+                      className="modal-pdf-object"
+                    >
+                      <iframe 
+                        src={`${selectedCert.badgeImage}#toolbar=1`}
+                        title={selectedCert.title}
+                        className="modal-pdf-iframe"
+                      >
+                        <p>Your browser does not support inline PDF viewing.</p>
+                      </iframe>
+                    </object>
+
+                    {/* Direct High-Visibility Action Banner */}
+                    <div className="pdf-action-banner">
+                      <div className="banner-info">
+                        <FileCheck size={20} className="text-emerald" />
+                        <div>
+                          <strong>Official Document: {selectedCert.title}</strong>
+                          <span className="banner-subtext">Issued by {selectedCert.issuer}</span>
+                        </div>
+                      </div>
                       <a 
                         href={selectedCert.badgeImage} 
                         target="_blank" 
@@ -120,7 +134,7 @@ export const CertificatesPage = () => {
                         className="btn btn-primary btn-sm"
                       >
                         <ExternalLink size={14} />
-                        <span>Open Original Certificate PDF</span>
+                        <span>Open Document in Full Window</span>
                       </a>
                     </div>
                   </div>
@@ -154,16 +168,18 @@ export const CertificatesPage = () => {
                 </div>
               </div>
 
-              <div>
-                <h4 className="tags-heading">Mastered Competencies:</h4>
-                <div className="tags-flex">
-                  {selectedCert.skills.map((s, idx) => (
-                    <span key={idx} className="modal-tag">{s}</span>
-                  ))}
+              {Array.isArray(selectedCert.skills) && selectedCert.skills.length > 0 && (
+                <div>
+                  <h4 className="tags-heading">Mastered Competencies:</h4>
+                  <div className="tags-flex">
+                    {selectedCert.skills.map((s, idx) => (
+                      <span key={idx} className="modal-tag">{s}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+              <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginTop: '1.2rem' }}>
                 {selectedCert.badgeImage && (
                   <a 
                     href={selectedCert.badgeImage} 
@@ -172,7 +188,7 @@ export const CertificatesPage = () => {
                     className="btn btn-primary btn-sm"
                   >
                     <Download size={16} />
-                    <span>View / Download Full Original Document</span>
+                    <span>Open / Download Original PDF Certificate</span>
                   </a>
                 )}
                 {selectedCert.verifyUrl && (
@@ -275,26 +291,44 @@ export const CertificatesPage = () => {
 
         .modal-cert-viewer {
           width: 100%;
-          background: #0f172a;
+          background: #090d16;
           border-bottom: 1px solid var(--border-light);
         }
-        .pdf-iframe-container {
+        .pdf-viewer-box {
           position: relative;
           width: 100%;
-          height: 420px;
+          display: flex;
+          flex-direction: column;
+        }
+        .modal-pdf-object, .modal-pdf-iframe {
+          width: 100%;
+          height: 380px;
+          border: none;
           background: #0f172a;
         }
-        .modal-pdf-iframe {
-          width: 100%;
-          height: 100%;
-          border: none;
-          background: #fff;
+        .pdf-action-banner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.8rem 1.2rem;
+          background: rgba(16, 185, 129, 0.1);
+          border-top: 1px solid rgba(16, 185, 129, 0.2);
+          gap: 1rem;
+          flex-wrap: wrap;
         }
-        .pdf-overlay-bar {
-          position: absolute;
-          bottom: 12px;
-          right: 12px;
-          z-index: 5;
+        .banner-info {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          font-size: 0.9rem;
+        }
+        .banner-subtext {
+          display: block;
+          font-size: 0.78rem;
+          color: var(--text-muted);
+        }
+        .text-emerald {
+          color: var(--accent-emerald);
         }
         .modal-cert-img {
           width: 100%;
