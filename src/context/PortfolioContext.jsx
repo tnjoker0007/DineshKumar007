@@ -123,10 +123,18 @@ export const PortfolioProvider = ({ children }) => {
         // Only update local state if real cloud data exists on server
         if (result.success && result.data && result.data.personalInfo && result.source === 'upstash_rest_cloud') {
           const sanitized = ensureDataDefaults(result.data);
-          setData(sanitized);
-          try {
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(sanitized));
-          } catch (err) {}
+          
+          setData((prev) => {
+            const localTimestamp = prev.lastUpdated || 0;
+            const cloudTimestamp = sanitized.lastUpdated || 0;
+            
+            // If local data was modified by user more recently than cloud data, keep local and push to cloud
+            if (localTimestamp > cloudTimestamp) {
+              saveGlobalData(prev);
+              return prev;
+            }
+            return sanitized;
+          });
         }
       }
     } catch (e) {
@@ -168,7 +176,8 @@ export const PortfolioProvider = ({ children }) => {
     setData((prev) => {
       const updated = {
         ...prev,
-        personalInfo: { ...prev.personalInfo, ...newInfo }
+        personalInfo: { ...prev.personalInfo, ...newInfo },
+        lastUpdated: Date.now()
       };
       saveGlobalData(updated);
       return updated;

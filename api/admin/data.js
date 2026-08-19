@@ -77,41 +77,28 @@ export default async function handler(req, res) {
 
     if (body.data) {
       try {
-        const dataString = JSON.stringify(body.data);
-        const setResponse = await fetch(`${UPSTASH_URL}/set/${REDIS_KEY}`, {
+        const dataString = typeof body.data === 'string' ? body.data : JSON.stringify(body.data);
+        
+        // Official Upstash REST API Command Execution Protocol
+        const response = await fetch(UPSTASH_URL, {
           method: 'POST',
           headers: { 
             Authorization: `Bearer ${UPSTASH_TOKEN}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(dataString)
+          body: JSON.stringify(["SET", REDIS_KEY, dataString])
         });
 
-        if (setResponse.ok) {
+        if (response.ok) {
+          const resData = await response.json();
           return res.status(200).json({
             success: true,
             message: 'Portfolio data saved permanently to Upstash Cloud Database!',
+            result: resData,
             data: body.data
           });
         } else {
-          const arrayResponse = await fetch(`${UPSTASH_URL}`, {
-            method: 'POST',
-            headers: { 
-              Authorization: `Bearer ${UPSTASH_TOKEN}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(["SET", REDIS_KEY, dataString])
-          });
-
-          if (arrayResponse.ok) {
-            return res.status(200).json({
-              success: true,
-              message: 'Portfolio data saved permanently to Upstash Cloud Database!',
-              data: body.data
-            });
-          }
-
-          const errText = await setResponse.text();
+          const errText = await response.text();
           return res.status(500).json({ error: 'Upstash SET Error: ' + errText });
         }
       } catch (err) {
