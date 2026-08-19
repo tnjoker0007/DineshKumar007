@@ -966,6 +966,63 @@ export const AdminPage = () => {
       )}
 
       <style>{`
+        .modal-backdrop {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          background: rgba(5, 10, 25, 0.85) !important;
+          backdrop-filter: blur(12px) !important;
+          -webkit-backdrop-filter: blur(12px) !important;
+          z-index: 99999 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          padding: 1.5rem !important;
+          overflow-y: auto !important;
+        }
+
+        .modal-content {
+          position: relative !important;
+          max-width: 620px !important;
+          width: 100% !important;
+          max-height: 90vh !important;
+          overflow-y: auto !important;
+          padding: 2.2rem !important;
+          border-radius: 20px !important;
+          background: rgba(15, 23, 42, 0.96) !important;
+          border: 1px solid rgba(255, 255, 255, 0.15) !important;
+          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 35px rgba(99, 102, 241, 0.25) !important;
+          margin: auto !important;
+        }
+
+        .modal-close-btn {
+          position: absolute !important;
+          top: 1.2rem !important;
+          right: 1.2rem !important;
+          width: 36px !important;
+          height: 36px !important;
+          border-radius: 50% !important;
+          background: rgba(255, 255, 255, 0.1) !important;
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+          color: #ffffff !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          cursor: pointer !important;
+          z-index: 10 !important;
+          transition: all 0.2s ease !important;
+        }
+
+        .modal-close-btn:hover {
+          background: rgba(239, 68, 68, 0.25) !important;
+          color: #ef4444 !important;
+          border-color: #ef4444 !important;
+        }
+
         .admin-page {
           padding: 4rem 0 6rem;
         }
