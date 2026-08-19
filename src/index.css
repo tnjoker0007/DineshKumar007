@@ -262,6 +262,30 @@ h1, h2, h3, h4, h5, h6 {
   left: 100%;
 }
 
+/* Glass Card Dynamic Mouse Tracking Spotlight */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(99, 102, 241, 0.18),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glass-card:hover::after {
+  opacity: 1;
+}
+
 .glass-card:hover {
   border-color: var(--border-glow);
   transform: translateY(-6px) scale(1.01);

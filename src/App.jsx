@@ -15,15 +15,17 @@ import { AdminPage } from './pages/AdminPage';
 import { CustomCursor } from './components/CustomCursor';
 import { ScrollProgressBar } from './components/ScrollProgressBar';
 import { LiveCodeRainBg } from './components/LiveCodeRainBg';
+import { GlassCardSpotlight } from './components/GlassCardSpotlight';
 
 const MainContent = () => {
   const { currentPage } = usePortfolio();
 
   return (
     <div className="app-layout">
-      {/* Interactive Custom Glowing Cursor & Top Scroll Progress Bar */}
+      {/* Interactive Custom Glowing Cursor, Scroll Progress & Glass Card Spotlight */}
       <CustomCursor />
       <ScrollProgressBar />
+      <GlassCardSpotlight />
 
       {/* Live Animated Multi-Language Code Streams Backdrop (Synthesized/Matrix Style) */}
       <LiveCodeRainBg />
