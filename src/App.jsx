@@ -18,6 +18,15 @@ const MainContent = () => {
 
   return (
     <div className="app-layout">
+      {/* Animated Ambient Glass Background Orbs & Mesh */}
+      <div className="ambient-glass-bg">
+        <div className="glass-orb orb-1"></div>
+        <div className="glass-orb orb-2"></div>
+        <div className="glass-orb orb-3"></div>
+        <div className="glass-orb orb-4"></div>
+        <div className="glass-mesh-grid"></div>
+      </div>
+
       <Navbar />
 
       <main className="main-content">
