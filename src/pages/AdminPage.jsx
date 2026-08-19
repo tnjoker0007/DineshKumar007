@@ -24,6 +24,44 @@ import {
   Upload
 } from 'lucide-react';
 
+const compressImageFile = (file, maxWidth = 500, maxHeight = 500, quality = 0.85) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(dataUrl);
+      };
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = event.target.result;
+    };
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsDataURL(file);
+  });
+};
+
 export const AdminPage = () => {
   const { 
     data, 
@@ -546,14 +584,19 @@ export const AdminPage = () => {
                         type="file" 
                         accept="image/*" 
                         style={{ display: 'none' }}
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files[0];
                           if (file) {
-                            const reader = new FileReader();
-                            reader.onloadend = () => {
-                              setBioForm((prev) => ({ ...prev, avatar: reader.result }));
-                            };
-                            reader.readAsDataURL(file);
+                            try {
+                              const compressedBase64 = await compressImageFile(file, 500, 500, 0.85);
+                              setBioForm((prev) => ({ ...prev, avatar: compressedBase64 }));
+                            } catch (err) {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                setBioForm((prev) => ({ ...prev, avatar: reader.result }));
+                              };
+                              reader.readAsDataURL(file);
+                            }
                           }
                         }}
                       />

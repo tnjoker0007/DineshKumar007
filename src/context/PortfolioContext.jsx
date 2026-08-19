@@ -78,14 +78,26 @@ export const PortfolioProvider = ({ children }) => {
   // Selected project modal state
   const [selectedProject, setSelectedProject] = useState(null);
 
-  // Sync global server data on mount & automatic poll every 5 seconds across all browsers
+  // Sync global server data on mount & automatic poll every 3 seconds across all browsers
   useEffect(() => {
     fetchGlobalData();
 
-    // Live background polling every 5 seconds for multi-browser sync
+    // Live background polling every 3 seconds for multi-browser sync
     const intervalId = setInterval(() => {
       fetchGlobalData();
-    }, 5000);
+    }, 3000);
+
+    // Sync across tabs in the same browser via storage event
+    const handleStorageChange = (e) => {
+      if (e.key === LOCAL_STORAGE_KEY && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (parsed && parsed.personalInfo) {
+            setData(ensureDataDefaults(parsed));
+          }
+        } catch (err) {}
+      }
+    };
 
     // Refetch immediately when tab becomes visible
     const handleVisibilityChange = () => {
@@ -93,10 +105,12 @@ export const PortfolioProvider = ({ children }) => {
         fetchGlobalData();
       }
     };
+    window.addEventListener('storage', handleStorageChange);
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       clearInterval(intervalId);
+      window.removeEventListener('storage', handleStorageChange);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);

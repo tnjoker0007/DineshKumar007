@@ -84,7 +84,7 @@ export default async function handler(req, res) {
             Authorization: `Bearer ${UPSTASH_TOKEN}`,
             'Content-Type': 'application/json'
           },
-          body: dataString
+          body: JSON.stringify(dataString)
         });
 
         if (setResponse.ok) {
@@ -94,6 +94,23 @@ export default async function handler(req, res) {
             data: body.data
           });
         } else {
+          const arrayResponse = await fetch(`${UPSTASH_URL}`, {
+            method: 'POST',
+            headers: { 
+              Authorization: `Bearer ${UPSTASH_TOKEN}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(["SET", REDIS_KEY, dataString])
+          });
+
+          if (arrayResponse.ok) {
+            return res.status(200).json({
+              success: true,
+              message: 'Portfolio data saved permanently to Upstash Cloud Database!',
+              data: body.data
+            });
+          }
+
           const errText = await setResponse.text();
           return res.status(500).json({ error: 'Upstash SET Error: ' + errText });
         }
