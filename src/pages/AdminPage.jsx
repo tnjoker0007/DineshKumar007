@@ -20,7 +20,8 @@ import {
   ShieldCheck,
   QrCode,
   KeyRound,
-  Quote
+  Quote,
+  Upload
 } from 'lucide-react';
 
 export const AdminPage = () => {
@@ -520,14 +521,57 @@ export const AdminPage = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Avatar Image URL</label>
-                <input 
-                  type="text" 
-                  value={bioForm.avatar} 
-                  onChange={(e) => setBioForm({ ...bioForm, avatar: e.target.value })}
-                  className="form-input" 
+            </div>
+
+            {/* Profile Photo Uploader & Manager */}
+            <div className="form-group" style={{ margin: '1.2rem 0' }}>
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem', fontWeight: '700' }}>
+                <Upload size={16} className="text-gradient" />
+                <span>Profile Photo Management (Reflects Across All Browsers)</span>
+              </label>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginTop: '0.8rem', padding: '1rem', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '14px', border: '1px solid var(--border-light)' }}>
+                <img 
+                  src={bioForm.avatar || '/images/avatar.jpg'} 
+                  alt="Profile Preview" 
+                  style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--accent-primary)', boxShadow: '0 0 20px rgba(99, 102, 241, 0.45)' }}
                 />
+
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                  <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <label className="btn btn-primary btn-sm" style={{ cursor: 'pointer', gap: '0.5rem' }}>
+                      <Upload size={16} />
+                      <span>Upload Profile Photo From Computer / Phone</span>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setBioForm((prev) => ({ ...prev, avatar: reader.result }));
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Supported: JPG, PNG, WEBP, GIF</span>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input 
+                      type="text" 
+                      value={bioForm.avatar} 
+                      onChange={(e) => setBioForm({ ...bioForm, avatar: e.target.value })}
+                      className="form-input" 
+                      placeholder="Or paste image URL (e.g. https://example.com/photo.jpg)"
+                      style={{ fontSize: '0.85rem' }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
