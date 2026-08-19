@@ -466,7 +466,7 @@ export const AdminPage = () => {
                 <label className="form-label">Full Name</label>
                 <input 
                   type="text" 
-                  value={bioForm.name} 
+                  value={bioForm?.name || ''} 
                   onChange={(e) => setBioForm({ ...bioForm, name: e.target.value })}
                   className="form-input" 
                 />
@@ -476,7 +476,7 @@ export const AdminPage = () => {
                 <label className="form-label">Professional Title</label>
                 <input 
                   type="text" 
-                  value={bioForm.title} 
+                  value={bioForm?.title || ''} 
                   onChange={(e) => setBioForm({ ...bioForm, title: e.target.value })}
                   className="form-input" 
                 />
@@ -488,7 +488,7 @@ export const AdminPage = () => {
                 <label className="form-label">Status Badge (Hero Pill)</label>
                 <input 
                   type="text" 
-                  value={bioForm.statusBadge} 
+                  value={bioForm?.statusBadge || ''} 
                   onChange={(e) => setBioForm({ ...bioForm, statusBadge: e.target.value })}
                   className="form-input" 
                 />
@@ -498,7 +498,7 @@ export const AdminPage = () => {
                 <label className="form-label">Location</label>
                 <input 
                   type="text" 
-                  value={bioForm.location} 
+                  value={bioForm?.location || ''} 
                   onChange={(e) => setBioForm({ ...bioForm, location: e.target.value })}
                   className="form-input" 
                 />
@@ -510,7 +510,7 @@ export const AdminPage = () => {
                 <label className="form-label">Email Address</label>
                 <input 
                   type="email" 
-                  value={bioForm.email} 
+                  value={bioForm?.email || ''} 
                   onChange={(e) => setBioForm({ ...bioForm, email: e.target.value })}
                   className="form-input" 
                 />
@@ -527,7 +527,7 @@ export const AdminPage = () => {
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginTop: '0.8rem', padding: '1rem', background: 'rgba(255, 255, 255, 0.04)', borderRadius: '14px', border: '1px solid var(--border-light)' }}>
                 <img 
-                  src={bioForm.avatar || '/images/avatar.jpg'} 
+                  src={bioForm?.avatar || '/images/avatar.jpg'} 
                   alt="Profile Preview" 
                   style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--accent-primary)', boxShadow: '0 0 20px rgba(99, 102, 241, 0.45)' }}
                 />
@@ -568,7 +568,7 @@ export const AdminPage = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <input 
                       type="text" 
-                      value={bioForm.avatar} 
+                      value={bioForm?.avatar || ''} 
                       onChange={(e) => setBioForm({ ...bioForm, avatar: e.target.value })}
                       className="form-input" 
                       placeholder="Or paste image URL (e.g. https://example.com/photo.jpg)"
@@ -583,7 +583,7 @@ export const AdminPage = () => {
               <label className="form-label">Hero Tagline</label>
               <input 
                 type="text" 
-                value={bioForm.tagline} 
+                value={bioForm?.tagline || ''} 
                 onChange={(e) => setBioForm({ ...bioForm, tagline: e.target.value })}
                 className="form-input" 
               />
@@ -593,7 +593,7 @@ export const AdminPage = () => {
               <label className="form-label">Biography Overview</label>
               <textarea 
                 rows={4}
-                value={bioForm.bio} 
+                value={bioForm?.bio || ''} 
                 onChange={(e) => setBioForm({ ...bioForm, bio: e.target.value })}
                 className="form-textarea" 
               ></textarea>
@@ -621,12 +621,12 @@ export const AdminPage = () => {
             </div>
 
             <div className="admin-list">
-              {data.projects.map((proj) => (
+              {(data?.projects || []).map((proj) => (
                 <div key={proj.id} className="glass-card list-item">
                   <img src={proj.image} alt={proj.title} className="item-thumb" />
                   <div className="item-info">
                     <h4 className="item-name">{proj.title}</h4>
-                    <span className="item-meta">{proj.category} • {proj.tags.join(', ')}</span>
+                    <span className="item-meta">{proj.category} • {Array.isArray(proj.tags) ? proj.tags.join(', ') : (proj.tags || '')}</span>
                   </div>
                   <button 
                     className="btn-delete"
@@ -659,7 +659,7 @@ export const AdminPage = () => {
             </div>
 
             <div className="admin-list">
-              {data.certificates.map((cert) => (
+              {(data?.certificates || []).map((cert) => (
                 <div key={cert.id} className="glass-card list-item">
                   <div className="cert-badge-placeholder">
                     <Award size={20} />
