@@ -4,14 +4,23 @@ import { Briefcase, ExternalLink, Github, Sparkles, X, ArrowUpRight } from 'luci
 
 export const Projects = () => {
   const { data, selectedProject, setSelectedProject } = usePortfolio();
-  const { projects } = data;
+  const projectList = Array.isArray(data?.projects) ? data.projects : [];
   const [activeCategory, setActiveCategory] = useState('All');
 
   const categories = ['All', 'AI & Web Apps', 'Web App', 'UI/UX Design', 'Mobile App'];
 
   const filteredProjects = activeCategory === 'All'
-    ? projects
-    : projects.filter(p => p.category.toLowerCase().includes(activeCategory.toLowerCase()));
+    ? projectList
+    : projectList.filter(p => p && p.category && p.category.toLowerCase().includes(activeCategory.toLowerCase()));
+
+  // Helper to ensure tags are always an array even if stored as comma-separated string
+  const ensureTagsArray = (tags) => {
+    if (Array.isArray(tags)) return tags;
+    if (typeof tags === 'string' && tags.trim().length > 0) {
+      return tags.split(',').map(s => s.trim()).filter(Boolean);
+    }
+    return [];
+  };
 
   // Helper to verify if a valid external link was explicitly provided in Admin CMS
   const isValidUrl = (url) => {
@@ -49,6 +58,7 @@ export const Projects = () => {
           {filteredProjects.map((project) => {
             const hasLive = isValidUrl(project.liveUrl);
             const hasGithub = isValidUrl(project.githubUrl);
+            const tags = ensureTagsArray(project.tags);
 
             return (
               <div 
@@ -78,11 +88,11 @@ export const Projects = () => {
 
                   {/* Tech Tags */}
                   <div className="project-tags">
-                    {project.tags.slice(0, 4).map((tag, idx) => (
+                    {tags.slice(0, 4).map((tag, idx) => (
                       <span key={idx} className="tag-item">{tag}</span>
                     ))}
-                    {project.tags.length > 4 && (
-                      <span className="tag-item">+{project.tags.length - 4}</span>
+                    {tags.length > 4 && (
+                      <span className="tag-item">+{tags.length - 4}</span>
                     )}
                   </div>
 
@@ -138,7 +148,7 @@ export const Projects = () => {
               <div className="modal-tags">
                 <h4 className="tags-heading">Technologies Used:</h4>
                 <div className="tags-flex">
-                  {selectedProject.tags.map((tag, idx) => (
+                  {ensureTagsArray(selectedProject.tags).map((tag, idx) => (
                     <span key={idx} className="modal-tag">{tag}</span>
                   ))}
                 </div>
@@ -202,19 +212,28 @@ export const Projects = () => {
         }
         .filter-btn:hover {
           color: var(--text-main);
-          border-color: var(--accent-primary);
+          border-color: var(--border-light);
         }
         .filter-btn.active {
-          background: var(--gradient-brand);
-          color: #fff;
-          border-color: transparent;
-          box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+          background: var(--accent-blue);
+          color: #ffffff;
+          border-color: var(--accent-blue);
+          box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        .projects-grid {
+          gap: 2rem;
         }
         .project-card {
-          overflow: hidden;
           cursor: pointer;
+          overflow: hidden;
+          padding: 0;
           display: flex;
           flex-direction: column;
+          transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+        }
+        .project-card:hover {
+          transform: translateY(-6px);
+          box-shadow: var(--shadow-xl), 0 0 20px rgba(59, 130, 246, 0.15);
         }
         .project-image-box {
           position: relative;
@@ -229,17 +248,18 @@ export const Projects = () => {
           transition: transform var(--transition-slow);
         }
         .project-card:hover .project-img {
-          transform: scale(1.08);
+          transform: scale(1.05);
         }
         .project-overlay {
           position: absolute;
           inset: 0;
-          background: rgba(9, 13, 22, 0.7);
+          background: rgba(10, 15, 30, 0.6);
+          backdrop-filter: blur(4px);
           display: flex;
           align-items: center;
           justify-content: center;
           opacity: 0;
-          transition: opacity var(--transition-normal);
+          transition: opacity var(--transition-fast);
         }
         .project-card:hover .project-overlay {
           opacity: 1;
@@ -247,47 +267,54 @@ export const Projects = () => {
         .btn-view-details {
           display: flex;
           align-items: center;
-          gap: 0.4rem;
-          padding: 0.6rem 1.1rem;
-          background: var(--gradient-brand);
-          color: #fff;
+          gap: 0.5rem;
+          padding: 0.6rem 1.2rem;
           border-radius: var(--radius-full);
+          background: rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          color: #ffffff;
           font-size: 0.85rem;
           font-weight: 600;
         }
         .badge-featured {
           position: absolute;
-          top: 12px;
-          right: 12px;
+          top: 1rem;
+          left: 1rem;
           padding: 0.25rem 0.75rem;
-          background: var(--gradient-brand);
-          color: #fff;
-          font-size: 0.72rem;
-          font-weight: 700;
           border-radius: var(--radius-full);
+          background: rgba(16, 185, 129, 0.9);
+          backdrop-filter: blur(4px);
+          color: #ffffff;
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
         .project-body {
-          padding: 1.4rem;
+          padding: 1.5rem;
           display: flex;
           flex-direction: column;
-          gap: 0.7rem;
           flex-grow: 1;
         }
         .project-category {
           font-size: 0.78rem;
           font-weight: 600;
-          color: var(--accent-secondary);
+          color: var(--accent-blue);
           text-transform: uppercase;
           letter-spacing: 0.5px;
+          margin-bottom: 0.4rem;
         }
         .project-title {
-          font-size: 1.15rem;
-          font-weight: 700;
+          font-size: 1.2rem;
+          margin-bottom: 0.6rem;
+          line-height: 1.3;
         }
         .project-desc {
-          font-size: 0.88rem;
           color: var(--text-muted);
+          font-size: 0.88rem;
           line-height: 1.5;
+          margin-bottom: 1.2rem;
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
@@ -297,7 +324,8 @@ export const Projects = () => {
           display: flex;
           flex-wrap: wrap;
           gap: 0.4rem;
-          margin-top: 0.4rem;
+          margin-top: auto;
+          margin-bottom: 1rem;
         }
         .tag-item {
           padding: 0.2rem 0.6rem;
@@ -305,93 +333,50 @@ export const Projects = () => {
           background: var(--bg-input);
           font-size: 0.75rem;
           color: var(--text-muted);
-          font-weight: 500;
         }
         .project-actions {
           display: flex;
-          align-items: center;
           gap: 0.6rem;
-          margin-top: 0.6rem;
-          padding-top: 0.8rem;
+          padding-top: 1rem;
           border-top: 1px solid var(--border-light);
         }
         .link-icon-btn {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
+          width: 36px;
+          height: 36px;
+          border-radius: var(--radius-md);
           background: var(--bg-input);
-          color: var(--text-main);
+          border: 1px solid var(--border-light);
+          color: var(--text-muted);
           display: flex;
           align-items: center;
           justify-content: center;
           transition: all var(--transition-fast);
         }
         .link-icon-btn:hover {
-          background: var(--accent-primary);
-          color: #fff;
+          color: var(--accent-blue);
+          border-color: var(--accent-blue);
+          background: rgba(59, 130, 246, 0.1);
         }
 
-        /* Modal styling */
-        .modal-backdrop {
-          position: fixed;
-          inset: 0;
-          z-index: 1000;
-          background: rgba(0, 0, 0, 0.75);
-          backdrop-filter: blur(8px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 1.5rem;
-        }
-        .modal-content {
-          width: 100%;
-          max-width: 650px;
-          max-height: 90vh;
-          overflow-y: auto;
-          position: relative;
-          padding: 0;
-          border-radius: var(--radius-lg);
-        }
-        .modal-close-btn {
-          position: absolute;
-          top: 16px;
-          right: 16px;
-          z-index: 10;
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          background: rgba(0,0,0,0.6);
-          color: #fff;
-          border: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-        }
         .modal-img {
           width: 100%;
-          height: 280px;
+          height: 260px;
           object-fit: cover;
-        }
-        .modal-body {
-          padding: 1.8rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-        .modal-title {
-          font-size: 1.6rem;
-          font-weight: 800;
         }
         .modal-desc {
           color: var(--text-muted);
-          line-height: 1.7;
-          font-size: 0.96rem;
+          line-height: 1.6;
+          margin: 1rem 0;
+        }
+        .modal-tags {
+          margin: 1.5rem 0;
         }
         .tags-heading {
-          font-size: 0.9rem;
-          margin-bottom: 0.5rem;
-          color: var(--text-main);
+          font-size: 0.85rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: var(--text-dim);
+          margin-bottom: 0.6rem;
         }
         .tags-flex {
           display: flex;
@@ -399,17 +384,17 @@ export const Projects = () => {
           gap: 0.5rem;
         }
         .modal-tag {
-          padding: 0.35rem 0.85rem;
-          border-radius: var(--radius-full);
-          background: rgba(99, 102, 241, 0.15);
-          color: var(--accent-primary);
+          padding: 0.3rem 0.75rem;
+          border-radius: var(--radius-sm);
+          background: var(--bg-input);
+          color: var(--accent-blue);
           font-size: 0.82rem;
-          font-weight: 600;
+          font-weight: 500;
         }
         .modal-actions {
           display: flex;
           gap: 1rem;
-          margin-top: 1rem;
+          margin-top: 1.5rem;
         }
       `}</style>
     </section>
