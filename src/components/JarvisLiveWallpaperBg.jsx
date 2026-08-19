@@ -27,8 +27,8 @@ export const JarvisLiveWallpaperBg = () => {
           mix-blend-mode: screen;
         }
         .jarvis-video-element {
-          width: 82vw;
-          height: 82vh;
+          width: 93vw;
+          height: 93vh;
           object-fit: contain;
           position: absolute;
           top: 50%;
@@ -38,8 +38,8 @@ export const JarvisLiveWallpaperBg = () => {
         }
         @media (max-width: 768px) {
           .jarvis-video-element {
-            width: 95vw;
-            height: 95vh;
+            width: 98vw;
+            height: 98vh;
           }
           .jarvis-live-wallpaper-container {
             opacity: 0.35;
