@@ -18,7 +18,7 @@ import { LiveCodeRainBg } from './components/LiveCodeRainBg';
 import { GlassCardSpotlight } from './components/GlassCardSpotlight';
 import { StickyLogo } from './components/StickyLogo';
 import { BlackPearlShipBg } from './components/BlackPearlShipBg';
-import { TechBHudBg } from './components/TechBHudBg';
+import { JarvisLiveWallpaperBg } from './components/JarvisLiveWallpaperBg';
 
 const MainContent = () => {
   const { currentPage } = usePortfolio();
@@ -31,8 +31,8 @@ const MainContent = () => {
       <GlassCardSpotlight />
       <StickyLogo />
 
-      {/* Rainmeter Tech-B HUD Theme Background Element (40% Opacity) */}
-      <TechBHudBg />
+      {/* Edwin Jarvis & Iron Man Rainmeter Live HUD Wallpaper (40% Opacity) */}
+      <JarvisLiveWallpaperBg />
 
       {/* Rotating 3D Black Pearl Pirate Ship Background Element */}
       <BlackPearlShipBg />
