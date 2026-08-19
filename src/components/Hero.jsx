@@ -71,26 +71,6 @@ export const Hero = () => {
               <ArrowRight size={18} />
             </button>
           </div>
-
-          {/* Quick Stats Grid */}
-          <div className="hero-stats-grid">
-            <div className="stat-card glass-card">
-              <span className="stat-number text-gradient">{personalInfo.stats.yearsExperience}</span>
-              <span className="stat-label">Years Experience</span>
-            </div>
-            <div className="stat-card glass-card">
-              <span className="stat-number text-cyan">{personalInfo.stats.completedProjects}</span>
-              <span className="stat-label">Projects Built</span>
-            </div>
-            <div className="stat-card glass-card">
-              <span className="stat-number text-gradient">{personalInfo.stats.happyClients}</span>
-              <span className="stat-label">Satisfied Clients</span>
-            </div>
-            <div className="stat-card glass-card">
-              <span className="stat-number text-cyan">{personalInfo.stats.certifications}</span>
-              <span className="stat-label">Certifications</span>
-            </div>
-          </div>
         </div>
 
         {/* Right Column: Visual Avatar & Floating Badges */}
