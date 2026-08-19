@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Briefcase, ExternalLink, Github, Sparkles, X, ArrowUpRight } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export const Projects = () => {
   const { data, selectedProject, setSelectedProject } = usePortfolio();
@@ -32,13 +33,15 @@ export const Projects = () => {
   return (
     <section className="projects-section" id="projects-section">
       <div className="container">
-        <div className="section-header">
-          <div className="badge badge-glow">
-            <Briefcase size={14} />
-            <span>Featured Portfolio</span>
+        <ScrollReveal animation="slide-up">
+          <div className="section-header">
+            <div className="badge badge-glow">
+              <Briefcase size={14} />
+              <span>Featured Portfolio</span>
+            </div>
+            <h2 className="section-title">Selected Works & Case Studies</h2>
           </div>
-          <h2 className="section-title">Selected Works & Case Studies</h2>
-        </div>
+        </ScrollReveal>
 
         {/* Category Filters */}
         <div className="project-filters">
@@ -55,17 +58,17 @@ export const Projects = () => {
 
         {/* Projects Grid */}
         <div className="projects-grid grid-3">
-          {filteredProjects.map((project) => {
+          {filteredProjects.map((project, idx) => {
             const hasLive = isValidUrl(project.liveUrl);
             const hasGithub = isValidUrl(project.githubUrl);
             const tags = ensureTagsArray(project.tags);
 
             return (
-              <div 
-                key={project.id} 
-                className="glass-card project-card"
-                onClick={() => setSelectedProject(project)}
-              >
+              <ScrollReveal key={project.id} delay={(idx % 3) * 120} animation="pop-up">
+                <div 
+                  className="glass-card project-card"
+                  onClick={() => setSelectedProject(project)}
+                >
                 {/* Image Preview */}
                 <div className="project-image-box">
                   <img src={project.image} alt={project.title} className="project-img" />
@@ -125,8 +128,9 @@ export const Projects = () => {
                   )}
                 </div>
               </div>
-            );
-          })}
+            </ScrollReveal>
+          );
+        })}
         </div>
       </div>
 

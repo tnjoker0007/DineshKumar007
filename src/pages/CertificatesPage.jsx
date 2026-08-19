@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download, FileCheck, Medal, Loader2 } from 'lucide-react';
+import { ScrollReveal } from '../components/ScrollReveal';
 
 const PdfCanvasViewer = ({ pdfUrl, title }) => {
   const canvasRef = useRef(null);
@@ -129,67 +130,68 @@ export const CertificatesPage = () => {
 
         {/* Certificates Grid */}
         <div className="certificates-grid grid-2">
-          {certificates.map((cert) => {
+          {certificates.map((cert, idx) => {
             const skillsList = Array.isArray(cert?.skills) ? cert.skills : [];
             return (
-              <div 
-                key={cert.id} 
-                className="glass-card cert-card"
-                onClick={() => setSelectedCert(cert)}
-              >
-                <div className="cert-header">
-                  <div className="cert-icon-box">
-                    <Award size={24} className="cert-award-icon" />
+              <ScrollReveal key={cert.id} delay={(idx % 2) * 120} animation="pop-up">
+                <div 
+                  className="glass-card cert-card"
+                  onClick={() => setSelectedCert(cert)}
+                >
+                  <div className="cert-header">
+                    <div className="cert-icon-box">
+                      <Award size={24} className="cert-award-icon" />
+                    </div>
+
+                    <div className="cert-meta">
+                      <span className="cert-issuer">{cert.issuer}</span>
+                      <h3 className="cert-title">{cert.title}</h3>
+                    </div>
                   </div>
 
-                  <div className="cert-meta">
-                    <span className="cert-issuer">{cert.issuer}</span>
-                    <h3 className="cert-title">{cert.title}</h3>
+                  <div className="cert-details">
+                    <div className="cert-detail-item">
+                      <Calendar size={14} />
+                      <span>Issued: {cert.date}</span>
+                    </div>
+                    <div className="cert-detail-item">
+                      <Key size={14} />
+                      <span>ID: {cert.credentialId}</span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="cert-details">
-                  <div className="cert-detail-item">
-                    <Calendar size={14} />
-                    <span>Issued: {cert.date}</span>
-                  </div>
-                  <div className="cert-detail-item">
-                    <Key size={14} />
-                    <span>ID: {cert.credentialId}</span>
-                  </div>
-                </div>
-
-                {/* Skills Tags */}
-                {skillsList.length > 0 && (
-                  <div className="cert-skills">
-                    {skillsList.map((skill, idx) => (
-                      <span key={idx} className="cert-skill-tag">{skill}</span>
-                    ))}
-                  </div>
-                )}
-
-                <div className="cert-actions" onClick={(e) => e.stopPropagation()}>
-                  {cert.verifyUrl && (
-                    <a 
-                      href={cert.verifyUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="btn btn-secondary btn-sm"
-                    >
-                      <ExternalLink size={14} />
-                      <span>Verify Credential</span>
-                    </a>
+                  {/* Skills Tags */}
+                  {skillsList.length > 0 && (
+                    <div className="cert-skills">
+                      {skillsList.map((skill, sIdx) => (
+                        <span key={sIdx} className="cert-skill-tag">{skill}</span>
+                      ))}
+                    </div>
                   )}
-                  <button 
-                    className="btn btn-primary btn-sm"
-                    onClick={() => setSelectedCert(cert)}
-                    style={{ gap: '0.4rem' }}
-                  >
-                    <Eye size={14} />
-                    <span>View Details & Certificate</span>
-                  </button>
+
+                  <div className="cert-actions" onClick={(e) => e.stopPropagation()}>
+                    {cert.verifyUrl && (
+                      <a 
+                        href={cert.verifyUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="btn btn-secondary btn-sm"
+                      >
+                        <ExternalLink size={14} />
+                        <span>Verify Credential</span>
+                      </a>
+                    )}
+                    <button 
+                      className="btn btn-primary btn-sm"
+                      onClick={() => setSelectedCert(cert)}
+                      style={{ gap: '0.4rem' }}
+                    >
+                      <Eye size={14} />
+                      <span>View Details & Certificate</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
             );
           })}
         </div>

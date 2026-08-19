@@ -544,3 +544,37 @@ h1, h2, h3, h4, h5, h6 {
 .animate-pop-scale {
   animation: popScale 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Scroll Reveal One-by-One Staggered Popups */
+.scroll-reveal-item {
+  opacity: 0;
+  transform: translateY(45px) scale(0.95);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.scroll-reveal-item.reveal-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.scroll-reveal-item.slide-left {
+  transform: translateX(-50px) scale(0.96);
+}
+.scroll-reveal-item.slide-left.reveal-active {
+  transform: translateX(0) scale(1);
+}
+
+.scroll-reveal-item.slide-right {
+  transform: translateX(50px) scale(0.96);
+}
+.scroll-reveal-item.slide-right.reveal-active {
+  transform: translateX(0) scale(1);
+}
+
+.scroll-reveal-item.zoom-in {
+  transform: scale(0.88);
+}
+.scroll-reveal-item.zoom-in.reveal-active {
+  transform: scale(1);
+}

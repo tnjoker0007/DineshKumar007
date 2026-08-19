@@ -1,6 +1,7 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Layers, CheckCircle2, ArrowRight } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export const Services = () => {
   const { data, setCurrentPage } = usePortfolio();
@@ -9,44 +10,48 @@ export const Services = () => {
   return (
     <section className="services-section" id="services-section">
       <div className="container">
-        <div className="section-header">
-          <div className="badge badge-glow">
-            <Layers size={14} />
-            <span>Services & Packages</span>
+        <ScrollReveal animation="slide-up">
+          <div className="section-header">
+            <div className="badge badge-glow">
+              <Layers size={14} />
+              <span>Services & Packages</span>
+            </div>
+            <h2 className="section-title">Solutions Tailored for Growth</h2>
           </div>
-          <h2 className="section-title">Solutions Tailored for Growth</h2>
-        </div>
+        </ScrollReveal>
 
         <div className="services-grid grid-3">
-          {services.map((srv) => (
-            <div key={srv.id} className="glass-card service-card">
-              <div className="service-header">
-                <span className="price-tag">From {srv.startingPrice}</span>
-                <h3 className="service-title">{srv.title}</h3>
-                <p className="service-desc">{srv.description}</p>
-              </div>
+          {services.map((srv, idx) => (
+            <ScrollReveal key={srv.id} delay={idx * 120} animation="pop-up">
+              <div className="glass-card service-card">
+                <div className="service-header">
+                  <span className="price-tag">From {srv.startingPrice}</span>
+                  <h3 className="service-title">{srv.title}</h3>
+                  <p className="service-desc">{srv.description}</p>
+                </div>
 
-              <div className="deliverables-box">
-                <span className="deliv-title">Included Deliverables:</span>
-                <ul className="deliv-list">
-                  {srv.deliverables.map((item, idx) => (
-                    <li key={idx} className="deliv-item">
-                      <CheckCircle2 size={16} className="deliv-icon" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                <div className="deliverables-box">
+                  <span className="deliv-title">Included Deliverables:</span>
+                  <ul className="deliv-list">
+                    {srv.deliverables.map((item, dIdx) => (
+                      <li key={dIdx} className="deliv-item">
+                        <CheckCircle2 size={16} className="deliv-icon" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-              <button 
-                className="btn btn-secondary btn-sm"
-                onClick={() => setCurrentPage('hire')}
-                style={{ marginTop: 'auto' }}
-              >
-                <span>Book Service</span>
-                <ArrowRight size={16} />
-              </button>
-            </div>
+                <button 
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => setCurrentPage('hire')}
+                  style={{ marginTop: 'auto' }}
+                >
+                  <span>Book Service</span>
+                  <ArrowRight size={16} />
+                </button>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

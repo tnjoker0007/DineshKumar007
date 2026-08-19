@@ -14,6 +14,7 @@ import {
   Cpu,
   Share2
 } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export const Skills = () => {
   const { data } = usePortfolio();
@@ -45,21 +46,23 @@ export const Skills = () => {
   return (
     <section className="skills-section" id="skills-section">
       <div className="container">
-        <div className="section-header">
-          <div className="badge badge-glow">
-            <Sparkles size={14} />
-            <span>Tech Stack & Expertise</span>
+        <ScrollReveal animation="slide-up">
+          <div className="section-header">
+            <div className="badge badge-glow">
+              <Sparkles size={14} />
+              <span>Technical Proficiency</span>
+            </div>
+            <h2 className="section-title">Skills & Technologies</h2>
           </div>
-          <h2 className="section-title">Skills & Technologies</h2>
-        </div>
+        </ScrollReveal>
 
-        {/* Category Tabs */}
+        {/* Category Filter Tabs */}
         <div className="category-tabs">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`category-tab ${activeCategory === cat ? 'active' : ''}`}
+              className={`cat-tab-btn ${activeCategory === cat ? 'active' : ''}`}
             >
               {cat}
             </button>
@@ -71,27 +74,29 @@ export const Skills = () => {
           {filteredSkills.map((skill, index) => {
             const Icon = getCategoryIcon(skill.category);
             return (
-              <div key={index} className="glass-card skill-card animate-fade">
-                <div className="skill-info">
-                  <div className="skill-title-group">
-                    <div className="skill-icon">
-                      <Icon size={18} />
+              <ScrollReveal key={index} delay={(index % 2) * 120} animation="pop-up">
+                <div className="glass-card skill-card animate-fade">
+                  <div className="skill-info">
+                    <div className="skill-title-group">
+                      <div className="skill-icon">
+                        <Icon size={18} />
+                      </div>
+                      <div>
+                        <span className="skill-name">{skill.name}</span>
+                        <span className="skill-cat-tag">{skill.category}</span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="skill-name">{skill.name}</span>
-                      <span className="skill-cat-tag">{skill.category}</span>
-                    </div>
+                    <span className="skill-level-text">{skill.level}%</span>
                   </div>
-                  <span className="skill-level-text">{skill.level}%</span>
-                </div>
 
-                <div className="skill-bar-track">
-                  <div 
-                    className="skill-bar-fill"
-                    style={{ width: `${skill.level}%` }}
-                  ></div>
+                  <div className="skill-bar-track">
+                    <div 
+                      className="skill-bar-fill"
+                      style={{ width: `${skill.level}%` }}
+                    ></div>
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
             );
           })}
         </div>
