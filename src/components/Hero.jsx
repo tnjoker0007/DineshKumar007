@@ -232,7 +232,10 @@ export const Hero = () => {
           height: 100%;
           object-fit: cover;
           border-radius: 20px;
-          filter: contrast(105%);
+          opacity: 1 !important;
+          background-color: #111827 !important;
+          mix-blend-mode: normal !important;
+          filter: brightness(1.05) contrast(1.05) !important;
         }
         .float-badge {
           position: absolute;

@@ -15,12 +15,16 @@ export const Footer = () => {
             <div 
               className="brand-logo" 
               onClick={() => { setCurrentPage('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.8rem' }}
             >
-              <div className="logo-badge">
-                <Sparkles size={20} />
-              </div>
+              <img 
+                src="/images/footer_logo.png" 
+                alt="Dinesh Kumar Logo" 
+                className="footer-logo-img"
+                style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
+              />
               <span className="logo-text">
-                {personalInfo.name.split(' ')[0]}<span className="text-gradient">.dev</span>
+                {personalInfo.name}<span className="text-gradient"></span>
               </span>
             </div>
             <p className="footer-bio">{personalInfo.tagline}</p>
