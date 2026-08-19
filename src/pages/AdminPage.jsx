@@ -768,11 +768,11 @@ export const AdminPage = () => {
             </div>
 
             <div className="admin-list">
-              {data.skills.map((skill, idx) => (
+              {(data?.skills || []).map((skill, idx) => (
                 <div key={idx} className="glass-card list-item">
                   <div className="item-info">
                     <h4 className="item-name">{skill.name}</h4>
-                    <span className="item-meta">{skill.category} • {skill.level}% Proficiency</span>
+                    <span className="item-meta">Category: {skill.category || 'Others'}</span>
                   </div>
                   <button 
                     className="btn-delete"
@@ -1047,34 +1047,20 @@ export const AdminPage = () => {
                 />
               </div>
 
-              <div className="grid-2">
-                <div className="form-group">
-                  <label className="form-label">Category</label>
-                  <select 
-                    value={newSkill.category} 
-                    onChange={(e) => setNewSkill({ ...newSkill, category: e.target.value })}
-                    className="form-select"
-                  >
-                    <option value="Frontend">Frontend</option>
-                    <option value="Backend">Backend</option>
-                    <option value="Database & Cloud">Database & Cloud</option>
-                    <option value="UI/UX Design">UI/UX Design</option>
-                    <option value="Tools">Tools</option>
-                    <option value="Others">Others</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Proficiency Level ({newSkill.level}%)</label>
-                  <input 
-                    type="range" 
-                    min={10}
-                    max={100}
-                    value={newSkill.level} 
-                    onChange={(e) => setNewSkill({ ...newSkill, level: Number(e.target.value) })}
-                    style={{ marginTop: '0.8rem' }}
-                  />
-                </div>
+              <div className="form-group">
+                <label className="form-label">Category</label>
+                <select 
+                  value={newSkill.category} 
+                  onChange={(e) => setNewSkill({ ...newSkill, category: e.target.value })}
+                  className="form-select"
+                >
+                  <option value="Frontend">Frontend</option>
+                  <option value="Backend">Backend</option>
+                  <option value="Database & Cloud">Database & Cloud</option>
+                  <option value="UI/UX Design">UI/UX Design</option>
+                  <option value="Tools">Tools</option>
+                  <option value="Others">Others</option>
+                </select>
               </div>
 
               <button type="submit" className="btn btn-primary">Add Skill</button>
