@@ -6,13 +6,31 @@ const PortfolioContext = createContext();
 const LOCAL_STORAGE_KEY = 'dinesh_kumar_portfolio_v2';
 const THEME_STORAGE_KEY = 'asma_portfolio_theme_v1';
 
+const ensureDataDefaults = (raw) => {
+  if (!raw || typeof raw !== 'object') return defaultPortfolioData;
+  return {
+    ...defaultPortfolioData,
+    ...raw,
+    personalInfo: { ...defaultPortfolioData.personalInfo, ...(raw.personalInfo || {}) },
+    projects: Array.isArray(raw.projects) ? raw.projects : defaultPortfolioData.projects,
+    certificates: Array.isArray(raw.certificates) ? raw.certificates : defaultPortfolioData.certificates,
+    skills: Array.isArray(raw.skills) ? raw.skills : defaultPortfolioData.skills,
+    experience: Array.isArray(raw.experience) ? raw.experience : defaultPortfolioData.experience,
+    education: Array.isArray(raw.education) ? raw.education : defaultPortfolioData.education,
+    services: Array.isArray(raw.services) ? raw.services : defaultPortfolioData.services,
+    testimonials: Array.isArray(raw.testimonials) ? raw.testimonials : defaultPortfolioData.testimonials,
+    inquiries: Array.isArray(raw.inquiries) ? raw.inquiries : defaultPortfolioData.inquiries
+  };
+};
+
 export const PortfolioProvider = ({ children }) => {
-  // Load initial data from localStorage or default
+  // Load initial data from localStorage or default with fail-safe defaults
   const [data, setData] = useState(() => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved); if (parsed && parsed.personalInfo) return parsed;
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.personalInfo) return ensureDataDefaults(parsed);
       }
     } catch (e) {
       console.error("Failed to parse local storage data:", e);
@@ -60,9 +78,10 @@ export const PortfolioProvider = ({ children }) => {
       if (res.ok) {
         const result = await res.json();
         if (result.success && result.data && result.data.personalInfo) {
-          setData(result.data);
+          const sanitized = ensureDataDefaults(result.data);
+          setData(sanitized);
           try {
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(result.data));
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(sanitized));
           } catch (err) {}
         }
       }
