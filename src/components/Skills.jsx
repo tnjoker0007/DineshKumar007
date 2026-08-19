@@ -12,7 +12,7 @@ import {
   Users,
   Video,
   Cpu,
-  Share2
+  Layers
 } from 'lucide-react';
 import { ScrollReveal } from './ScrollReveal';
 
@@ -24,23 +24,32 @@ export const Skills = () => {
   // Dynamically extract unique categories present in the skills array
   const rawCategories = skillList.map(s => s.category).filter(Boolean);
   const uniqueCategories = Array.from(new Set(rawCategories));
-  const categories = ['All', ...uniqueCategories];
+  
+  // Ensure 'Others' is present in category filter options
+  let categories = ['All', ...uniqueCategories];
+  if (!categories.some(c => c.toLowerCase() === 'others')) {
+    categories.push('Others');
+  }
 
   const filteredSkills = activeCategory === 'All' 
     ? skillList 
+    : activeCategory === 'Others'
+    ? skillList.filter(s => !s.category || s.category.trim().toLowerCase().includes('other'))
     : skillList.filter(s => s.category && s.category.trim().toLowerCase() === activeCategory.trim().toLowerCase());
 
   const getCategoryIcon = (cat) => {
-    if (!cat) return Wrench;
+    if (!cat) return Layers;
     const c = cat.toLowerCase();
     if (c.includes('program') || c.includes('code')) return Code;
-    if (c.includes('web') || c.includes('dev')) return Server;
+    if (c.includes('front') || c.includes('web') || c.includes('dev')) return Server;
+    if (c.includes('back')) return Database;
     if (c.includes('security') || c.includes('tech')) return Shield;
-    if (c.includes('db') || c.includes('data')) return Database;
+    if (c.includes('db') || c.includes('data') || c.includes('cloud')) return Database;
     if (c.includes('manage') || c.includes('lead')) return Users;
-    if (c.includes('creative') || c.includes('design') || c.includes('ui')) return Video;
+    if (c.includes('creative') || c.includes('design') || c.includes('ui')) return Palette;
     if (c.includes('hardware') || c.includes('ev')) return Cpu;
-    return Terminal;
+    if (c.includes('other')) return Layers;
+    return Wrench;
   };
 
   return (
@@ -70,30 +79,22 @@ export const Skills = () => {
         </div>
 
         {/* Skills Grid */}
-        <div className="skills-grid grid-2">
+        <div className="skills-grid grid-3">
           {filteredSkills.map((skill, index) => {
             const Icon = getCategoryIcon(skill.category);
             return (
-              <ScrollReveal key={index} delay={(index % 2) * 120} animation="pop-up">
+              <ScrollReveal key={index} delay={(index % 3) * 100} animation="pop-up">
                 <div className="glass-card skill-card animate-fade">
                   <div className="skill-info">
                     <div className="skill-title-group">
                       <div className="skill-icon">
-                        <Icon size={18} />
+                        <Icon size={20} />
                       </div>
                       <div>
                         <span className="skill-name">{skill.name}</span>
-                        <span className="skill-cat-tag">{skill.category}</span>
+                        <span className="skill-cat-tag">{skill.category || 'Others'}</span>
                       </div>
                     </div>
-                    <span className="skill-level-text">{skill.level}%</span>
-                  </div>
-
-                  <div className="skill-bar-track">
-                    <div 
-                      className="skill-bar-fill"
-                      style={{ width: `${skill.level}%` }}
-                    ></div>
                   </div>
                 </div>
               </ScrollReveal>
@@ -114,8 +115,8 @@ export const Skills = () => {
           gap: 0.6rem;
           margin-bottom: 2.5rem;
         }
-        .category-tab {
-          padding: 0.55rem 1.2rem;
+        .cat-tab-btn {
+          padding: 0.55rem 1.3rem;
           border-radius: var(--radius-full);
           background: var(--bg-card);
           border: 1px solid var(--glass-border);
@@ -126,73 +127,65 @@ export const Skills = () => {
           cursor: pointer;
           transition: all var(--transition-fast);
         }
-        .category-tab:hover {
+        .cat-tab-btn:hover {
           color: var(--text-main);
           border-color: var(--accent-primary);
+          transform: translateY(-2px);
         }
-        .category-tab.active {
+        .cat-tab-btn.active {
           background: var(--gradient-brand);
           color: #ffffff;
           border-color: transparent;
-          box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+          box-shadow: 0 4px 18px rgba(99, 102, 241, 0.35);
         }
-        .skills-grid {
+        .grid-3 {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
           gap: 1.2rem;
         }
         .skill-card {
-          padding: 1.3rem 1.5rem;
+          padding: 1.2rem 1.4rem;
           display: flex;
-          flex-direction: column;
-          gap: 0.8rem;
+          align-items: center;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .skill-card:hover {
+          transform: translateY(-4px);
+          border-color: var(--accent-primary);
+          box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
         }
         .skill-info {
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          width: 100%;
         }
         .skill-title-group {
           display: flex;
           align-items: center;
-          gap: 0.7rem;
+          gap: 0.9rem;
         }
         .skill-icon {
-          width: 34px;
-          height: 34px;
-          border-radius: 8px;
+          width: 42px;
+          height: 42px;
+          border-radius: 12px;
           background: rgba(99, 102, 241, 0.12);
           color: var(--accent-primary);
           display: flex;
           align-items: center;
           justify-content: center;
+          flex-shrink: 0;
         }
         .skill-name {
-          font-weight: 600;
-          font-size: 0.95rem;
+          font-weight: 700;
+          font-size: 1rem;
           display: block;
+          color: var(--text-main);
         }
         .skill-cat-tag {
-          font-size: 0.75rem;
+          font-size: 0.78rem;
           color: var(--text-muted);
           display: block;
-        }
-        .skill-level-text {
-          font-family: var(--font-mono);
-          font-size: 0.88rem;
-          font-weight: 600;
-          color: var(--accent-secondary);
-        }
-        .skill-bar-track {
-          width: 100%;
-          height: 8px;
-          border-radius: 4px;
-          background: var(--bg-input);
-          overflow: hidden;
-        }
-        .skill-bar-fill {
-          height: 100%;
-          border-radius: 4px;
-          background: var(--gradient-brand);
-          transition: width 0.8s ease-out;
+          margin-top: 0.1rem;
         }
       `}</style>
     </section>

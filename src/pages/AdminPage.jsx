@@ -1060,6 +1060,7 @@ export const AdminPage = () => {
                     <option value="Database & Cloud">Database & Cloud</option>
                     <option value="UI/UX Design">UI/UX Design</option>
                     <option value="Tools">Tools</option>
+                    <option value="Others">Others</option>
                   </select>
                 </div>
 
