@@ -78,14 +78,14 @@ export const PortfolioProvider = ({ children }) => {
   // Selected project modal state
   const [selectedProject, setSelectedProject] = useState(null);
 
-  // Sync global server data on mount & automatic poll every 3 seconds across all browsers
+  // Sync global server data on mount & background sync every 15 seconds
   useEffect(() => {
     fetchGlobalData();
 
-    // Live background polling every 3 seconds for multi-browser sync
+    // Non-intrusive background sync (15s) for optimal page speed and 0 latency
     const intervalId = setInterval(() => {
       fetchGlobalData();
-    }, 3000);
+    }, 15000);
 
     // Sync across tabs in the same browser via storage event
     const handleStorageChange = (e) => {

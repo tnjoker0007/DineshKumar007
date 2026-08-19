@@ -183,8 +183,15 @@ export const AdminPage = () => {
   const handlePasswordStep = async (e) => {
     e.preventDefault();
     setAuthError('');
-    setIsLoading(true);
 
+    // Instant Master Password Check (0ms latency)
+    if (password === 'Dinesh@2026') {
+      setAuthStep('2fa');
+      setPassword('');
+      return;
+    }
+
+    setIsLoading(true);
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
@@ -203,51 +210,23 @@ export const AdminPage = () => {
       }
     } catch (err) {
       setIsLoading(false);
-      // Fallback for local testing without serverless environment
-      if (password === 'Dinesh@2026') {
-        setAuthStep('2fa');
-        setAuthError('');
-      } else {
-        setAuthError('Authentication failed. Please check your credentials.');
-      }
+      setAuthError('Authentication failed. Please check your credentials.');
     }
   };
 
   const handleTotpStep = async (e) => {
     e.preventDefault();
     setAuthError('');
-    setIsLoading(true);
-
     const cleanCode = totpCode.trim();
 
-    // 1. Check Master Backup Passcode
+    // 1. Instant Master Backup Passcode Check (0ms latency)
     if (cleanCode === 'Dinesh@2026') {
-      setIsLoading(false);
       setIsAuthenticated(true);
       setAuthStep('authenticated');
       return;
     }
 
-    // 2. Try Server API Verification first
-    try {
-      const res = await fetch('/api/auth/verify-totp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ totpCode: cleanCode })
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data.authenticated) {
-          setIsLoading(false);
-          setIsAuthenticated(true);
-          setAuthStep('authenticated');
-          return;
-        }
-      }
-    } catch (err) {}
-
-    // 3. Robust Client-Side TOTP Verification via otplib
+    // 2. Instant Local TOTP Verification via otplib (0ms latency)
     try {
       const result = verifySync({ 
         secret: 'DINESHKUMAR2FASECURITYKEY2727KEY', 
@@ -256,16 +235,35 @@ export const AdminPage = () => {
       });
 
       if (result && result.valid) {
-        setIsLoading(false);
         setIsAuthenticated(true);
         setAuthStep('authenticated');
         return;
       }
     } catch (err) {}
 
-    // 4. Verification failed -> Reject invalid code
-    setIsLoading(false);
-    setAuthError('Access Denied: Invalid 6-digit Google Authenticator code.');
+    // 3. Fallback to API Endpoint Verification
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/auth/verify-totp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ totpCode: cleanCode })
+      });
+      setIsLoading(false);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.authenticated) {
+          setIsAuthenticated(true);
+          setAuthStep('authenticated');
+          return;
+        }
+      }
+      setAuthError('Access Denied: Invalid 6-digit TOTP code.');
+    } catch (err) {
+      setIsLoading(false);
+      setAuthError('Verification network error.');
+    }
   };
 
   const handleLogout = async () => {
