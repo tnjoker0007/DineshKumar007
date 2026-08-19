@@ -133,27 +133,13 @@ export const AdminPage = () => {
     triggerToast();
   };
 
-  // Check server-side session on component mount
+  // Ensure Admin Portal is LOCKED by default whenever accessed
   React.useEffect(() => {
-    checkServerSession();
+    setIsAuthenticated(false);
+    setAuthStep('login');
+    setPassword('');
+    setTotpCode('');
   }, []);
-
-  const checkServerSession = async () => {
-    try {
-      const res = await fetch('/api/auth/session');
-      const data = await res.json();
-      if (data.authenticated) {
-        setIsAuthenticated(true);
-        setAuthStep('authenticated');
-      } else if (data.step === '2fa') {
-        setAuthStep('2fa');
-      } else {
-        setAuthStep('login');
-      }
-    } catch (err) {
-      setAuthStep('login');
-    }
-  };
 
   const handlePasswordStep = async (e) => {
     e.preventDefault();

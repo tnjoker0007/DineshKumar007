@@ -1,103 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download, FileCheck, Loader2 } from 'lucide-react';
-
-const PdfCanvasViewer = ({ pdfUrl, title }) => {
-  const canvasRef = useRef(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
-    setError(false);
-
-    const renderPdf = async () => {
-      try {
-        if (!window.pdfjsLib) {
-          // Brief pause if CDN script is still initializing
-          await new Promise(r => setTimeout(r, 600));
-        }
-        if (!window.pdfjsLib) {
-          throw new Error('PDF.js not loaded on page');
-        }
-
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-        const loadingTask = window.pdfjsLib.getDocument(pdfUrl);
-        const pdf = await loadingTask.promise;
-        const page = await pdf.getPage(1);
-
-        if (!isMounted) return;
-
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-
-        const context = canvas.getContext('2d');
-        const scale = window.innerWidth < 640 ? 1.0 : 1.4;
-        const viewport = page.getViewport({ scale });
-
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-
-        const renderContext = {
-          canvasContext: context,
-          viewport: viewport
-        };
-
-        await page.render(renderContext).promise;
-        if (isMounted) setLoading(false);
-      } catch (err) {
-        console.error('PDF canvas rendering error:', err);
-        if (isMounted) {
-          setError(true);
-          setLoading(false);
-        }
-      }
-    };
-
-    renderPdf();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [pdfUrl]);
-
-  return (
-    <div className="pdf-canvas-wrapper">
-      {loading && (
-        <div className="pdf-loading-box">
-          <Loader2 size={32} className="spin-icon text-emerald" />
-          <span>Rendering Official Certificate Image...</span>
-        </div>
-      )}
-
-      <canvas 
-        ref={canvasRef} 
-        className="modal-pdf-canvas"
-        style={{ display: loading || error ? 'none' : 'block' }}
-      />
-
-      {error && (
-        <div className="pdf-fallback-box">
-          <FileText size={48} className="text-emerald" />
-          <h4 className="fallback-title">{title}</h4>
-          <p className="fallback-desc">Official Verified Certificate Document</p>
-          <a 
-            href={pdfUrl} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="btn btn-primary btn-sm"
-            style={{ marginTop: '0.8rem' }}
-          >
-            <ExternalLink size={16} />
-            <span>Open Original Certificate PDF</span>
-          </a>
-        </div>
-      )}
-    </div>
-  );
-};
+import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download, FileCheck, CheckCircle2, Medal } from 'lucide-react';
 
 export const CertificatesPage = () => {
   const { data } = usePortfolio();
@@ -196,42 +99,18 @@ export const CertificatesPage = () => {
               <X size={20} />
             </button>
 
-            {/* Render Full Certificate Image/Canvas */}
-            <div className="modal-cert-viewer">
-              {selectedCert.badgeImage ? (
-                isPdf(selectedCert.badgeImage) ? (
-                  <div className="pdf-viewer-container">
-                    <PdfCanvasViewer pdfUrl={selectedCert.badgeImage} title={selectedCert.title} />
-
-                    {/* Banner Action Bar */}
-                    <div className="pdf-action-banner">
-                      <div className="banner-info">
-                        <FileCheck size={18} className="text-emerald" />
-                        <div>
-                          <strong>{selectedCert.title}</strong>
-                          <span className="banner-subtext">Issued by {selectedCert.issuer}</span>
-                        </div>
-                      </div>
-                      <a 
-                        href={selectedCert.badgeImage} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="btn btn-primary btn-sm"
-                      >
-                        <Download size={14} />
-                        <span>Download Original PDF</span>
-                      </a>
-                    </div>
-                  </div>
-                ) : (
-                  <img src={selectedCert.badgeImage} alt={selectedCert.title} className="modal-cert-img" />
-                )
-              ) : (
-                <div className="no-cert-doc-placeholder">
-                  <FileText size={48} className="text-dim" />
-                  <p>Official Certificate Document Available via Verification Link</p>
+            {/* Visual Certificate Card Header Banner */}
+            <div className="modal-cert-banner-card">
+              <div className="cert-visual-frame">
+                <div className="cert-seal-badge">
+                  <Medal size={28} className="text-emerald" />
+                  <span>OFFICIAL E-CERTIFICATE</span>
                 </div>
-              )}
+                
+                <h4 className="cert-banner-heading">{selectedCert.title}</h4>
+                <p className="cert-banner-sub">Awarded to <strong>DINESH KUMAR E</strong></p>
+                <span className="cert-banner-org">Issued by {selectedCert.issuer}</span>
+              </div>
             </div>
 
             <div className="modal-body">
@@ -264,7 +143,7 @@ export const CertificatesPage = () => {
                 </div>
               )}
 
-              <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginTop: '1.2rem' }}>
+              <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginTop: '1.4rem' }}>
                 {selectedCert.badgeImage && (
                   <a 
                     href={selectedCert.badgeImage} 
@@ -273,7 +152,7 @@ export const CertificatesPage = () => {
                     className="btn btn-primary btn-sm"
                   >
                     <Download size={16} />
-                    <span>Open / Download Original PDF Certificate</span>
+                    <span>View / Download Full PDF Certificate</span>
                   </a>
                 )}
                 {selectedCert.verifyUrl && (
@@ -374,104 +253,53 @@ export const CertificatesPage = () => {
           margin-top: 0.4rem;
         }
 
-        .modal-cert-viewer {
+        .modal-cert-banner-card {
           width: 100%;
-          background: #090d16;
+          background: linear-gradient(135deg, #090d16 0%, #111c35 100%);
+          padding: 2.2rem 1.8rem;
           border-bottom: 1px solid var(--border-light);
-          overflow: hidden;
-        }
-        .pdf-viewer-container {
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-        }
-        .pdf-canvas-wrapper {
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background: #0b1120;
-          min-height: 280px;
-          max-height: 480px;
-          overflow-y: auto;
-          padding: 1rem 0;
-        }
-        .modal-pdf-canvas {
-          max-width: 100%;
-          height: auto !important;
-          border-radius: 6px;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .pdf-loading-box {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 0.8rem;
-          padding: 3rem;
-          color: var(--text-muted);
-        }
-        .spin-icon {
-          animation: spin 1.2s linear infinite;
-        }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        .pdf-fallback-box {
-          padding: 3rem 1.5rem;
           text-align: center;
+        }
+        .cert-visual-frame {
+          border: 1px dashed rgba(16, 185, 129, 0.3);
+          border-radius: 12px;
+          padding: 1.8rem 1.2rem;
+          background: rgba(16, 185, 129, 0.03);
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 0.6rem;
+          gap: 0.5rem;
         }
-        .fallback-title {
-          font-size: 1.1rem;
+        .cert-seal-badge {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          font-size: 0.75rem;
+          font-weight: 800;
+          letter-spacing: 1px;
+          color: #34d399;
+          text-transform: uppercase;
+        }
+        .cert-banner-heading {
+          font-size: 1.3rem;
+          font-weight: 800;
+          color: #ffffff;
           margin-top: 0.4rem;
         }
-        .fallback-desc {
-          color: var(--text-muted);
-          font-size: 0.88rem;
-        }
-        .pdf-action-banner {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0.8rem 1.2rem;
-          background: rgba(16, 185, 129, 0.1);
-          border-top: 1px solid rgba(16, 185, 129, 0.2);
-          gap: 1rem;
-          flex-wrap: wrap;
-        }
-        .banner-info {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-          font-size: 0.9rem;
-        }
-        .banner-subtext {
-          display: block;
-          font-size: 0.78rem;
+        .cert-banner-sub {
+          font-size: 0.95rem;
           color: var(--text-muted);
         }
-        .text-emerald {
-          color: var(--accent-emerald);
+        .cert-banner-sub strong {
+          color: #38bdf8;
         }
-        .modal-cert-img {
-          width: 100%;
-          max-height: 440px;
-          object-fit: contain;
-          background: #0f172a;
+        .cert-banner-org {
+          font-size: 0.82rem;
+          color: var(--text-dim);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
-        .no-cert-doc-placeholder {
-          padding: 3rem 1.5rem;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 0.8rem;
-          color: var(--text-muted);
-        }
+
         .cert-issuer-large {
           font-size: 1rem;
           color: var(--text-muted);
