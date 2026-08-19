@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download } from 'lucide-react';
+import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download, FileSpreadsheet } from 'lucide-react';
 
 export const CertificatesPage = () => {
   const { data } = usePortfolio();
@@ -8,6 +8,14 @@ export const CertificatesPage = () => {
   const [selectedCert, setSelectedCert] = useState(null);
 
   const isPdf = (url) => url && (url.toLowerCase().endsWith('.pdf') || url.includes('.pdf'));
+
+  const getGooglePdfViewerUrl = (pdfPath) => {
+    if (!pdfPath) return '';
+    const fullUrl = pdfPath.startsWith('http') 
+      ? pdfPath 
+      : `https://dinesh-kumar007.vercel.app${pdfPath.startsWith('/') ? '' : '/'}${pdfPath}`;
+    return `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(fullUrl)}`;
+  };
 
   return (
     <div className="certificates-page">
@@ -94,13 +102,13 @@ export const CertificatesPage = () => {
               <X size={20} />
             </button>
 
-            {/* Render Full Res Certificate Document (PDF iframe or Image) */}
+            {/* Render Full Res Certificate Document (Universal Viewer for Mobile & Desktop) */}
             <div className="modal-cert-viewer">
               {selectedCert.badgeImage ? (
                 isPdf(selectedCert.badgeImage) ? (
                   <div className="pdf-iframe-container">
                     <iframe 
-                      src={`${selectedCert.badgeImage}#toolbar=0&navpanes=0`}
+                      src={getGooglePdfViewerUrl(selectedCert.badgeImage)}
                       title={selectedCert.title}
                       className="modal-pdf-iframe"
                     />
@@ -111,8 +119,8 @@ export const CertificatesPage = () => {
                         rel="noopener noreferrer"
                         className="btn btn-primary btn-sm"
                       >
-                        <Download size={14} />
-                        <span>Open / Download Full Certificate Document (PDF)</span>
+                        <ExternalLink size={14} />
+                        <span>Open Original Certificate PDF</span>
                       </a>
                     </div>
                   </div>
@@ -273,13 +281,14 @@ export const CertificatesPage = () => {
         .pdf-iframe-container {
           position: relative;
           width: 100%;
-          height: 380px;
+          height: 420px;
           background: #0f172a;
         }
         .modal-pdf-iframe {
           width: 100%;
           height: 100%;
           border: none;
+          background: #fff;
         }
         .pdf-overlay-bar {
           position: absolute;
@@ -289,7 +298,7 @@ export const CertificatesPage = () => {
         }
         .modal-cert-img {
           width: 100%;
-          max-height: 400px;
+          max-height: 420px;
           object-fit: contain;
           background: #0f172a;
         }
