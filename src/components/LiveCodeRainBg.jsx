@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 const DUMMY_CODE_SNIPPETS = [
-  "01001001 01101110 01110100 01100101 01101100 01101100 01101001 01100111 01100101 01101110 01100011 01100101",
+  "01001001 01101110 01110100 01100101 01101100 01101100 01101001 01100111 01100011 01100101",
   "function computeMatrix(x, y, z) { return (x * 0x1f + y * 0x3d + z) ^ 0xff; }",
   "const calculateDistance = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));",
   "if (node.isLeaf) { processBuffer(node.value); return node.next; }",
@@ -33,29 +33,29 @@ export const LiveCodeRainBg = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const fontSize = 13;
-    const colSpacing = 200;
+    const fontSize = 14;
+    const colSpacing = 170;
     const columnsCount = Math.floor(canvas.width / colSpacing) + 2;
 
-    const colors = ['#38bdf8', '#c084fc', '#34d399', '#f43f5e', '#fbbf24', '#818cf8'];
+    const colors = ['#38bdf8', '#c084fc', '#34d399', '#f43f5e', '#fbbf24', '#818cf8', '#22d3ee'];
     
     const columns = Array.from({ length: columnsCount }).map((_, i) => ({
-      x: (i * colSpacing) + 20,
+      x: (i * colSpacing) + 15,
       y: Math.random() * canvas.height,
-      speed: 0.5 + Math.random() * 0.5,
+      speed: 0.6 + Math.random() * 0.7,
       snippetIndex: Math.floor(Math.random() * DUMMY_CODE_SNIPPETS.length),
       charIndex: Math.floor(Math.random() * 20),
       color: colors[i % colors.length],
-      opacity: 0.15 + Math.random() * 0.1
+      opacity: 0.5 + Math.random() * 0.3
     }));
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = `600 ${fontSize}px "Fira Code", monospace`;
+      ctx.font = `700 ${fontSize}px "Fira Code", monospace`;
 
       columns.forEach((col) => {
         const fullSnippet = DUMMY_CODE_SNIPPETS[col.snippetIndex];
-        col.charIndex += 0.12;
+        col.charIndex += 0.16;
 
         if (col.charIndex >= fullSnippet.length) {
           col.charIndex = 0;
@@ -66,7 +66,7 @@ export const LiveCodeRainBg = () => {
         const visibleText = fullSnippet.substring(0, Math.floor(col.charIndex));
 
         ctx.shadowColor = col.color;
-        ctx.shadowBlur = 3;
+        ctx.shadowBlur = 8;
         ctx.fillStyle = col.color;
         ctx.globalAlpha = col.opacity;
         ctx.fillText(visibleText, col.x, col.y);
@@ -100,7 +100,8 @@ export const LiveCodeRainBg = () => {
         height: '100vh',
         pointerEvents: 'none',
         zIndex: 0,
-        opacity: 0.22
+        opacity: 0.40,
+        mixBlendMode: 'screen'
       }}
     />
   );
