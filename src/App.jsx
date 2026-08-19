@@ -17,6 +17,7 @@ import { ScrollProgressBar } from './components/ScrollProgressBar';
 import { LiveCodeRainBg } from './components/LiveCodeRainBg';
 import { GlassCardSpotlight } from './components/GlassCardSpotlight';
 import { StickyLogo } from './components/StickyLogo';
+import { BlackPearlShipBg } from './components/BlackPearlShipBg';
 
 const MainContent = () => {
   const { currentPage } = usePortfolio();
@@ -28,6 +29,9 @@ const MainContent = () => {
       <ScrollProgressBar />
       <GlassCardSpotlight />
       <StickyLogo />
+
+      {/* Rotating 3D Black Pearl Pirate Ship Background Element */}
+      <BlackPearlShipBg />
 
       {/* Live Animated Multi-Language Code Streams Backdrop (Synthesized/Matrix Style) */}
       <LiveCodeRainBg />
