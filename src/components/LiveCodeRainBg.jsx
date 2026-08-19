@@ -33,41 +33,40 @@ export const LiveCodeRainBg = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const fontSize = 14;
-    const colSpacing = 160;
+    const fontSize = 15;
+    const colSpacing = 180;
     const columnsCount = Math.floor(canvas.width / colSpacing) + 2;
 
     const colors = ['#38bdf8', '#c084fc', '#34d399', '#f43f5e', '#fbbf24', '#22d3ee', '#818cf8'];
     
     const columns = Array.from({ length: columnsCount }).map((_, i) => ({
-      x: i * colSpacing + (Math.random() * 20 - 10),
+      x: (i * colSpacing) + 20,
       y: Math.random() * canvas.height,
-      speed: 0.6 + Math.random() * 0.8,
+      speed: 0.7 + Math.random() * 0.8,
       snippetIndex: Math.floor(Math.random() * CODE_SNIPPETS.length),
-      charIndex: Math.floor(Math.random() * 30),
+      charIndex: Math.floor(Math.random() * 20),
       color: colors[i % colors.length],
-      opacity: 0.4 + Math.random() * 0.35
+      opacity: 0.55 + Math.random() * 0.35
     }));
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = `600 ${fontSize}px "Fira Code", "Courier New", monospace`;
+      ctx.font = `700 ${fontSize}px "Fira Code", monospace`;
 
       columns.forEach((col) => {
         const fullSnippet = CODE_SNIPPETS[col.snippetIndex];
-        col.charIndex += 0.2;
+        col.charIndex += 0.18;
 
         if (col.charIndex >= fullSnippet.length) {
           col.charIndex = 0;
           col.snippetIndex = (col.snippetIndex + 1) % CODE_SNIPPETS.length;
           col.y = -30;
-          col.x = Math.random() * (canvas.width - 100);
         }
 
         const visibleText = fullSnippet.substring(0, Math.floor(col.charIndex));
 
         ctx.shadowColor = col.color;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 12;
         ctx.fillStyle = col.color;
         ctx.globalAlpha = col.opacity;
         ctx.fillText(visibleText, col.x, col.y);
@@ -75,7 +74,6 @@ export const LiveCodeRainBg = () => {
         col.y += col.speed;
         if (col.y > canvas.height + 40) {
           col.y = -30;
-          col.x = Math.random() * (canvas.width - 100);
         }
       });
 
@@ -101,7 +99,8 @@ export const LiveCodeRainBg = () => {
         width: '100vw',
         height: '100vh',
         pointerEvents: 'none',
-        zIndex: 1,
+        zIndex: 99,
+        mixBlendMode: 'screen',
         opacity: 0.85
       }}
     />
