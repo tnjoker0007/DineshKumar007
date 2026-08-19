@@ -22,21 +22,27 @@ export const JarvisLiveWallpaperBg = () => {
           height: 100vh;
           pointer-events: none;
           z-index: 0;
-          opacity: 0.40;
+          opacity: 0.45;
           overflow: hidden;
           mix-blend-mode: screen;
         }
         .jarvis-video-element {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
+          width: 82vw;
+          height: 82vh;
+          object-fit: contain;
           position: absolute;
-          inset: 0;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
           filter: contrast(115%) brightness(1.1) drop-shadow(0 0 25px rgba(56, 189, 248, 0.4));
         }
         @media (max-width: 768px) {
+          .jarvis-video-element {
+            width: 95vw;
+            height: 95vh;
+          }
           .jarvis-live-wallpaper-container {
-            opacity: 0.30;
+            opacity: 0.35;
           }
         }
       `}</style>
