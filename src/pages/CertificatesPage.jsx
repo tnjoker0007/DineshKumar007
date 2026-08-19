@@ -1,6 +1,103 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download, FileSpreadsheet, FileCheck } from 'lucide-react';
+import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download, FileCheck, Loader2 } from 'lucide-react';
+
+const PdfCanvasViewer = ({ pdfUrl, title }) => {
+  const canvasRef = useRef(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    setError(false);
+
+    const renderPdf = async () => {
+      try {
+        if (!window.pdfjsLib) {
+          // Brief pause if CDN script is still initializing
+          await new Promise(r => setTimeout(r, 600));
+        }
+        if (!window.pdfjsLib) {
+          throw new Error('PDF.js not loaded on page');
+        }
+
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const loadingTask = window.pdfjsLib.getDocument(pdfUrl);
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+
+        if (!isMounted) return;
+
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const context = canvas.getContext('2d');
+        const scale = window.innerWidth < 640 ? 1.0 : 1.4;
+        const viewport = page.getViewport({ scale });
+
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = {
+          canvasContext: context,
+          viewport: viewport
+        };
+
+        await page.render(renderContext).promise;
+        if (isMounted) setLoading(false);
+      } catch (err) {
+        console.error('PDF canvas rendering error:', err);
+        if (isMounted) {
+          setError(true);
+          setLoading(false);
+        }
+      }
+    };
+
+    renderPdf();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pdfUrl]);
+
+  return (
+    <div className="pdf-canvas-wrapper">
+      {loading && (
+        <div className="pdf-loading-box">
+          <Loader2 size={32} className="spin-icon text-emerald" />
+          <span>Rendering Official Certificate Image...</span>
+        </div>
+      )}
+
+      <canvas 
+        ref={canvasRef} 
+        className="modal-pdf-canvas"
+        style={{ display: loading || error ? 'none' : 'block' }}
+      />
+
+      {error && (
+        <div className="pdf-fallback-box">
+          <FileText size={48} className="text-emerald" />
+          <h4 className="fallback-title">{title}</h4>
+          <p className="fallback-desc">Official Verified Certificate Document</p>
+          <a 
+            href={pdfUrl} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="btn btn-primary btn-sm"
+            style={{ marginTop: '0.8rem' }}
+          >
+            <ExternalLink size={16} />
+            <span>Open Original Certificate PDF</span>
+          </a>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const CertificatesPage = () => {
   const { data } = usePortfolio();
@@ -99,31 +196,19 @@ export const CertificatesPage = () => {
               <X size={20} />
             </button>
 
-            {/* Document / Certificate Header Banner */}
+            {/* Render Full Certificate Image/Canvas */}
             <div className="modal-cert-viewer">
               {selectedCert.badgeImage ? (
                 isPdf(selectedCert.badgeImage) ? (
-                  <div className="pdf-viewer-box">
-                    <object 
-                      data={`${selectedCert.badgeImage}#toolbar=1&navpanes=0&scrollbar=1`} 
-                      type="application/pdf"
-                      className="modal-pdf-object"
-                    >
-                      <iframe 
-                        src={`${selectedCert.badgeImage}#toolbar=1`}
-                        title={selectedCert.title}
-                        className="modal-pdf-iframe"
-                      >
-                        <p>Your browser does not support inline PDF viewing.</p>
-                      </iframe>
-                    </object>
+                  <div className="pdf-viewer-container">
+                    <PdfCanvasViewer pdfUrl={selectedCert.badgeImage} title={selectedCert.title} />
 
-                    {/* Direct High-Visibility Action Banner */}
+                    {/* Banner Action Bar */}
                     <div className="pdf-action-banner">
                       <div className="banner-info">
-                        <FileCheck size={20} className="text-emerald" />
+                        <FileCheck size={18} className="text-emerald" />
                         <div>
-                          <strong>Official Document: {selectedCert.title}</strong>
+                          <strong>{selectedCert.title}</strong>
                           <span className="banner-subtext">Issued by {selectedCert.issuer}</span>
                         </div>
                       </div>
@@ -133,8 +218,8 @@ export const CertificatesPage = () => {
                         rel="noopener noreferrer"
                         className="btn btn-primary btn-sm"
                       >
-                        <ExternalLink size={14} />
-                        <span>Open Document in Full Window</span>
+                        <Download size={14} />
+                        <span>Download Original PDF</span>
                       </a>
                     </div>
                   </div>
@@ -293,18 +378,60 @@ export const CertificatesPage = () => {
           width: 100%;
           background: #090d16;
           border-bottom: 1px solid var(--border-light);
+          overflow: hidden;
         }
-        .pdf-viewer-box {
-          position: relative;
-          width: 100%;
+        .pdf-viewer-container {
           display: flex;
           flex-direction: column;
-        }
-        .modal-pdf-object, .modal-pdf-iframe {
           width: 100%;
-          height: 380px;
-          border: none;
-          background: #0f172a;
+        }
+        .pdf-canvas-wrapper {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: #0b1120;
+          min-height: 280px;
+          max-height: 480px;
+          overflow-y: auto;
+          padding: 1rem 0;
+        }
+        .modal-pdf-canvas {
+          max-width: 100%;
+          height: auto !important;
+          border-radius: 6px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .pdf-loading-box {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.8rem;
+          padding: 3rem;
+          color: var(--text-muted);
+        }
+        .spin-icon {
+          animation: spin 1.2s linear infinite;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .pdf-fallback-box {
+          padding: 3rem 1.5rem;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.6rem;
+        }
+        .fallback-title {
+          font-size: 1.1rem;
+          margin-top: 0.4rem;
+        }
+        .fallback-desc {
+          color: var(--text-muted);
+          font-size: 0.88rem;
         }
         .pdf-action-banner {
           display: flex;
@@ -332,7 +459,7 @@ export const CertificatesPage = () => {
         }
         .modal-cert-img {
           width: 100%;
-          max-height: 420px;
+          max-height: 440px;
           object-fit: contain;
           background: #0f172a;
         }
