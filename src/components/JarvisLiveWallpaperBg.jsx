@@ -4,7 +4,7 @@ export const JarvisLiveWallpaperBg = () => {
   return (
     <div className="jarvis-live-wallpaper-container">
       <video
-        src="/video/jarvis_hud.mp4"
+        src="/video/jarvis_hud_opt.mp4"
         poster="/images/jarvis_preview.gif"
         autoPlay
         loop
