@@ -1,6 +1,110 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download, FileCheck, CheckCircle2, Medal } from 'lucide-react';
+import { Award, ExternalLink, ShieldCheck, Calendar, Key, CheckCircle, Sparkles, X, FileText, Eye, Download, FileCheck, Medal, Loader2 } from 'lucide-react';
+
+const PdfCanvasViewer = ({ pdfUrl, title }) => {
+  const canvasRef = useRef(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    setError(false);
+
+    const renderPdf = async () => {
+      try {
+        if (!window.pdfjsLib) {
+          // Brief pause for CDN script initialization
+          await new Promise(r => setTimeout(r, 600));
+        }
+        if (!window.pdfjsLib) {
+          throw new Error('PDF.js CDN not ready');
+        }
+
+        // Disable workerSrc cross-origin restriction for universal mobile execution
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+
+        const loadingTask = window.pdfjsLib.getDocument({
+          url: pdfUrl,
+          cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+          cMapPacked: true,
+          disableFontFace: false
+        });
+
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+
+        if (!isMounted) return;
+
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const context = canvas.getContext('2d');
+        const scale = window.innerWidth < 640 ? 1.0 : 1.3;
+        const viewport = page.getViewport({ scale });
+
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = {
+          canvasContext: context,
+          viewport: viewport
+        };
+
+        await page.render(renderContext).promise;
+        if (isMounted) setLoading(false);
+      } catch (err) {
+        console.error('PDF canvas rendering error:', err);
+        if (isMounted) {
+          setError(true);
+          setLoading(false);
+        }
+      }
+    };
+
+    renderPdf();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pdfUrl]);
+
+  return (
+    <div className="pdf-canvas-wrapper">
+      {loading && (
+        <div className="pdf-loading-box">
+          <Loader2 size={32} className="spin-icon text-emerald" />
+          <span>Rendering Official Verified Certificate...</span>
+        </div>
+      )}
+
+      <canvas 
+        ref={canvasRef} 
+        className="modal-pdf-canvas"
+        style={{ display: loading || error ? 'none' : 'block' }}
+      />
+
+      {error && (
+        <div className="pdf-fallback-box">
+          <FileText size={48} className="text-emerald" />
+          <h4 className="fallback-title">{title}</h4>
+          <p className="fallback-desc">Official Verified Certificate Document Available</p>
+          <a 
+            href={pdfUrl} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="btn btn-primary btn-sm"
+            style={{ marginTop: '0.8rem' }}
+          >
+            <ExternalLink size={16} />
+            <span>Open Document PDF Directly</span>
+          </a>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const CertificatesPage = () => {
   const { data } = usePortfolio();
@@ -15,11 +119,11 @@ export const CertificatesPage = () => {
         <div className="section-header">
           <div className="badge badge-emerald">
             <ShieldCheck size={14} />
-            <span>Verified Credentials</span>
+            <span>Verified Credentials ({certificates.length})</span>
           </div>
           <h2 className="section-title">Professional Certifications</h2>
           <p className="page-intro">
-            Validated industry certifications from leading cloud, web engineering, and academic institutions.
+            Validated industry certifications from leading cloud, web engineering, NPTEL, Infosys Springboard, and academic institutions.
           </p>
         </div>
 
@@ -104,13 +208,51 @@ export const CertificatesPage = () => {
               <div className="cert-visual-frame">
                 <div className="cert-seal-badge">
                   <Medal size={28} className="text-emerald" />
-                  <span>OFFICIAL E-CERTIFICATE</span>
+                  <span>OFFICIAL VERIFIED CERTIFICATE</span>
                 </div>
                 
                 <h4 className="cert-banner-heading">{selectedCert.title}</h4>
                 <p className="cert-banner-sub">Awarded to <strong>DINESH KUMAR E</strong></p>
                 <span className="cert-banner-org">Issued by {selectedCert.issuer}</span>
               </div>
+            </div>
+
+            {/* Canvas Certificate Renderer */}
+            <div className="modal-cert-viewer">
+              {selectedCert.badgeImage ? (
+                isPdf(selectedCert.badgeImage) ? (
+                  <div className="pdf-viewer-container">
+                    <PdfCanvasViewer pdfUrl={selectedCert.badgeImage} title={selectedCert.title} />
+
+                    {/* Banner Action Bar */}
+                    <div className="pdf-action-banner">
+                      <div className="banner-info">
+                        <FileCheck size={18} className="text-emerald" />
+                        <div>
+                          <strong>{selectedCert.title}</strong>
+                          <span className="banner-subtext">Issued by {selectedCert.issuer}</span>
+                        </div>
+                      </div>
+                      <a 
+                        href={selectedCert.badgeImage} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="btn btn-primary btn-sm"
+                      >
+                        <Download size={14} />
+                        <span>Download Original PDF</span>
+                      </a>
+                    </div>
+                  </div>
+                ) : (
+                  <img src={selectedCert.badgeImage} alt={selectedCert.title} className="modal-cert-img" />
+                )
+              ) : (
+                <div className="no-cert-doc-placeholder">
+                  <FileText size={48} className="text-dim" />
+                  <p>Official Certificate Document Available via Verification Link</p>
+                </div>
+              )}
             </div>
 
             <div className="modal-body">
@@ -300,6 +442,104 @@ export const CertificatesPage = () => {
           letter-spacing: 0.5px;
         }
 
+        .modal-cert-viewer {
+          width: 100%;
+          background: #090d16;
+          border-bottom: 1px solid var(--border-light);
+          overflow: hidden;
+        }
+        .pdf-viewer-container {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+        }
+        .pdf-canvas-wrapper {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: #0b1120;
+          min-height: 280px;
+          max-height: 480px;
+          overflow-y: auto;
+          padding: 1rem 0;
+        }
+        .modal-pdf-canvas {
+          max-width: 100%;
+          height: auto !important;
+          border-radius: 6px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .pdf-loading-box {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.8rem;
+          padding: 3rem;
+          color: var(--text-muted);
+        }
+        .spin-icon {
+          animation: spin 1.2s linear infinite;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .pdf-fallback-box {
+          padding: 3rem 1.5rem;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.6rem;
+        }
+        .fallback-title {
+          font-size: 1.1rem;
+          margin-top: 0.4rem;
+        }
+        .fallback-desc {
+          color: var(--text-muted);
+          font-size: 0.88rem;
+        }
+        .pdf-action-banner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.8rem 1.2rem;
+          background: rgba(16, 185, 129, 0.1);
+          border-top: 1px solid rgba(16, 185, 129, 0.2);
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+        .banner-info {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          font-size: 0.9rem;
+        }
+        .banner-subtext {
+          display: block;
+          font-size: 0.78rem;
+          color: var(--text-muted);
+        }
+        .text-emerald {
+          color: var(--accent-emerald);
+        }
+        .modal-cert-img {
+          width: 100%;
+          max-height: 440px;
+          object-fit: contain;
+          background: #0f172a;
+        }
+        .no-cert-doc-placeholder {
+          padding: 3rem 1.5rem;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.8rem;
+          color: var(--text-muted);
+        }
         .cert-issuer-large {
           font-size: 1rem;
           color: var(--text-muted);
