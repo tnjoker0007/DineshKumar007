@@ -120,7 +120,8 @@ export const PortfolioProvider = ({ children }) => {
       const res = await fetch('/api/admin/data?t=' + Date.now());
       if (res.ok) {
         const result = await res.json();
-        if (result.success && result.data && result.data.personalInfo) {
+        // Only update local state if real cloud data exists on server
+        if (result.success && result.data && result.data.personalInfo && result.source === 'upstash_rest_cloud') {
           const sanitized = ensureDataDefaults(result.data);
           setData(sanitized);
           try {

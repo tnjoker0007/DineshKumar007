@@ -92,6 +92,12 @@ export const AdminPage = () => {
   // Bio Form Local State
   const [bioForm, setBioForm] = useState(data.personalInfo);
 
+  React.useEffect(() => {
+    if (data && data.personalInfo) {
+      setBioForm(data.personalInfo);
+    }
+  }, [data.personalInfo]);
+
   // Project Form State
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [newProject, setNewProject] = useState({
@@ -586,12 +592,16 @@ export const AdminPage = () => {
                           const file = e.target.files[0];
                           if (file) {
                             try {
-                              const compressedBase64 = await compressImageFile(file, 500, 500, 0.85);
+                              const compressedBase64 = await compressImageFile(file, 400, 400, 0.82);
                               setBioForm((prev) => ({ ...prev, avatar: compressedBase64 }));
+                              updatePersonalInfo({ avatar: compressedBase64 });
+                              triggerToast();
                             } catch (err) {
                               const reader = new FileReader();
                               reader.onloadend = () => {
                                 setBioForm((prev) => ({ ...prev, avatar: reader.result }));
+                                updatePersonalInfo({ avatar: reader.result });
+                                triggerToast();
                               };
                               reader.readAsDataURL(file);
                             }
