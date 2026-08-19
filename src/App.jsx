@@ -14,6 +14,7 @@ import { HiringPage } from './pages/HiringPage';
 import { AdminPage } from './pages/AdminPage';
 import { CustomCursor } from './components/CustomCursor';
 import { ScrollProgressBar } from './components/ScrollProgressBar';
+import { LiveCodeRainBg } from './components/LiveCodeRainBg';
 
 const MainContent = () => {
   const { currentPage } = usePortfolio();
@@ -23,6 +24,9 @@ const MainContent = () => {
       {/* Interactive Custom Glowing Cursor & Top Scroll Progress Bar */}
       <CustomCursor />
       <ScrollProgressBar />
+
+      {/* Live Animated Multi-Language Code Streams Backdrop (Synthesized/Matrix Style) */}
+      <LiveCodeRainBg />
 
       {/* Animated Ambient Glass Background Orbs & Mesh */}
       <div className="ambient-glass-bg">
