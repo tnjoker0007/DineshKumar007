@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 const CODE_SNIPPETS = [
-  "public class DineshKumar { public static void main(String[] args) { System.out.println('Team Lead @ LTI'); } }",
+  "public class DineshKumar { public static void main() { System.out.println('Team Lead @ LTI'); } }",
   "def async_pipeline(stream: Stream) -> JSON: return await stream.transform(mode='AI_IoT')",
   "const [portfolio, setPortfolio] = useState({ owner: 'Dinesh Kumar E', certs: 22, score: '84%' });",
   "SELECT id, title, issuer, verify_url FROM credentials WHERE status = 'VERIFIED_OK';",
@@ -33,37 +33,41 @@ export const LiveCodeRainBg = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Initialize floating code columns
-    const fontSize = 13;
-    const columnsCount = Math.floor(canvas.width / 260) + 1;
+    const fontSize = 14;
+    const colSpacing = 160;
+    const columnsCount = Math.floor(canvas.width / colSpacing) + 2;
+
+    const colors = ['#38bdf8', '#c084fc', '#34d399', '#f43f5e', '#fbbf24', '#22d3ee', '#818cf8'];
     
     const columns = Array.from({ length: columnsCount }).map((_, i) => ({
-      x: i * 280 + Math.random() * 40,
+      x: i * colSpacing + (Math.random() * 20 - 10),
       y: Math.random() * canvas.height,
-      speed: 0.4 + Math.random() * 0.6,
+      speed: 0.6 + Math.random() * 0.8,
       snippetIndex: Math.floor(Math.random() * CODE_SNIPPETS.length),
-      charIndex: Math.floor(Math.random() * 20),
-      color: i % 4 === 0 ? '#38bdf8' : i % 4 === 1 ? '#a855f7' : i % 4 === 2 ? '#34d399' : '#f43f5e',
-      opacity: 0.18 + Math.random() * 0.12
+      charIndex: Math.floor(Math.random() * 30),
+      color: colors[i % colors.length],
+      opacity: 0.4 + Math.random() * 0.35
     }));
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = `600 ${fontSize}px "Fira Code", monospace`;
+      ctx.font = `600 ${fontSize}px "Fira Code", "Courier New", monospace`;
 
       columns.forEach((col) => {
         const fullSnippet = CODE_SNIPPETS[col.snippetIndex];
-        col.charIndex += 0.15;
+        col.charIndex += 0.2;
 
         if (col.charIndex >= fullSnippet.length) {
           col.charIndex = 0;
           col.snippetIndex = (col.snippetIndex + 1) % CODE_SNIPPETS.length;
-          col.y = -20;
-          col.x = Math.random() * canvas.width;
+          col.y = -30;
+          col.x = Math.random() * (canvas.width - 100);
         }
 
         const visibleText = fullSnippet.substring(0, Math.floor(col.charIndex));
 
+        ctx.shadowColor = col.color;
+        ctx.shadowBlur = 10;
         ctx.fillStyle = col.color;
         ctx.globalAlpha = col.opacity;
         ctx.fillText(visibleText, col.x, col.y);
@@ -71,7 +75,7 @@ export const LiveCodeRainBg = () => {
         col.y += col.speed;
         if (col.y > canvas.height + 40) {
           col.y = -30;
-          col.x = Math.random() * canvas.width;
+          col.x = Math.random() * (canvas.width - 100);
         }
       });
 
@@ -97,8 +101,8 @@ export const LiveCodeRainBg = () => {
         width: '100vw',
         height: '100vh',
         pointerEvents: 'none',
-        zIndex: 0,
-        opacity: 0.7
+        zIndex: 1,
+        opacity: 0.85
       }}
     />
   );
