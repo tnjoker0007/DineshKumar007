@@ -37,7 +37,8 @@ export const LiveCodeRainBg = () => {
     const colSpacing = 170;
     const columnsCount = Math.floor(canvas.width / colSpacing) + 2;
 
-    const colors = ['#38bdf8', '#c084fc', '#34d399', '#f43f5e', '#fbbf24', '#818cf8', '#22d3ee'];
+    const darkColors = ['#38bdf8', '#c084fc', '#34d399', '#f43f5e', '#fbbf24', '#818cf8', '#22d3ee'];
+    const lightColors = ['#0284c7', '#7c3aed', '#059669', '#dc2626', '#d97706', '#4f46e5', '#0891b2'];
     
     const columns = Array.from({ length: columnsCount }).map((_, i) => ({
       x: (i * colSpacing) + 15,
@@ -45,11 +46,14 @@ export const LiveCodeRainBg = () => {
       speed: 0.6 + Math.random() * 0.7,
       snippetIndex: Math.floor(Math.random() * DUMMY_CODE_SNIPPETS.length),
       charIndex: Math.floor(Math.random() * 20),
-      color: colors[i % colors.length],
+      colorIndex: i % darkColors.length,
       opacity: 0.5 + Math.random() * 0.3
     }));
 
     const render = () => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const activeColors = isLight ? lightColors : darkColors;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.font = `700 ${fontSize}px "Fira Code", monospace`;
 
@@ -64,11 +68,12 @@ export const LiveCodeRainBg = () => {
         }
 
         const visibleText = fullSnippet.substring(0, Math.floor(col.charIndex));
+        const color = activeColors[col.colorIndex];
 
-        ctx.shadowColor = col.color;
-        ctx.shadowBlur = 8;
-        ctx.fillStyle = col.color;
-        ctx.globalAlpha = col.opacity;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = isLight ? 2 : 8;
+        ctx.fillStyle = color;
+        ctx.globalAlpha = isLight ? 0.65 : col.opacity;
         ctx.fillText(visibleText, col.x, col.y);
 
         col.y += col.speed;
@@ -100,8 +105,7 @@ export const LiveCodeRainBg = () => {
         height: '100vh',
         pointerEvents: 'none',
         zIndex: 0,
-        opacity: 0.40,
-        mixBlendMode: 'screen'
+        opacity: 0.45
       }}
     />
   );

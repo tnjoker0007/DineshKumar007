@@ -42,7 +42,7 @@ export const BlackPearlShipBg = () => {
           z-index: 0;
           opacity: 0.38;
           mix-blend-mode: screen;
-          transition: opacity 0.3s ease;
+          transition: all 0.4s ease;
         }
         .black-pearl-frame {
           width: 100%;
@@ -61,6 +61,16 @@ export const BlackPearlShipBg = () => {
           object-fit: contain;
           border-radius: 50%;
         }
+
+        /* Light Theme Adaptation */
+        [data-theme="light"] .black-pearl-ship-container {
+          mix-blend-mode: multiply;
+          opacity: 0.5;
+        }
+        [data-theme="light"] .black-pearl-frame {
+          filter: invert(0.85) drop-shadow(0 0 30px rgba(99, 102, 241, 0.4));
+        }
+
         @media (max-width: 1024px) {
           .black-pearl-ship-container {
             width: 320px;
