@@ -409,7 +409,7 @@ export const AdminPage = () => {
             onClick={() => setActiveTab('projects')}
           >
             <Briefcase size={16} />
-            <span>Projects ({data.projects.length})</span>
+            <span>Projects ({(data?.projects || []).length})</span>
           </button>
 
           <button 
@@ -417,7 +417,7 @@ export const AdminPage = () => {
             onClick={() => setActiveTab('certs')}
           >
             <Award size={16} />
-            <span>Certificates ({data.certificates.length})</span>
+            <span>Certificates ({(data?.certificates || []).length})</span>
           </button>
 
           <button 
@@ -425,7 +425,7 @@ export const AdminPage = () => {
             onClick={() => setActiveTab('skills')}
           >
             <Wrench size={16} />
-            <span>Skills ({data.skills.length})</span>
+            <span>Skills ({(data?.skills || []).length})</span>
           </button>
 
           <button 
