@@ -13,7 +13,7 @@ export const defaultPortfolioData = {
     resumeUrl: "#download-resume",
     socials: {
       github: "https://github.com/tnjoker0007",
-      linkedin: "https://in.linkedin.com/in/dinesh-kumar-e-550816217",
+      linkedin: "https://www.linkedin.com/in/dinesh-kumar-9b276843a/",
       instagram: "https://www.instagram.com/tj_editz_07",
       twitter: "https://x.com/TJEDITZ2006"
     },
