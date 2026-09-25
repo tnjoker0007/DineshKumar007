@@ -20,7 +20,8 @@ import {
   QrCode,
   KeyRound,
   Quote,
-  Upload
+  Upload,
+  Link
 } from 'lucide-react';
 
 const compressImageFile = (file, maxWidth = 500, maxHeight = 500, quality = 0.85) => {
@@ -660,12 +661,61 @@ export const AdminPage = () => {
 
             <div className="form-group">
               <label className="form-label">Biography Overview</label>
-              <textarea 
+              <textarea
                 rows={4}
-                value={bioForm?.bio || ''} 
+                value={bioForm?.bio || ''}
                 onChange={(e) => setBioForm({ ...bioForm, bio: e.target.value })}
-                className="form-textarea" 
+                className="form-textarea"
               ></textarea>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700' }}>
+                <Link size={16} className="text-gradient" />
+                <span>Social Media Links</span>
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', marginTop: '0.6rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span style={{ width: '90px', fontSize: '0.82rem', color: 'var(--text-muted)', flexShrink: 0 }}>GitHub</span>
+                  <input
+                    type="url"
+                    value={bioForm?.socials?.github || ''}
+                    onChange={(e) => setBioForm({ ...bioForm, socials: { ...bioForm?.socials, github: e.target.value } })}
+                    className="form-input"
+                    placeholder="https://github.com/yourusername"
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span style={{ width: '90px', fontSize: '0.82rem', color: 'var(--text-muted)', flexShrink: 0 }}>LinkedIn</span>
+                  <input
+                    type="url"
+                    value={bioForm?.socials?.linkedin || ''}
+                    onChange={(e) => setBioForm({ ...bioForm, socials: { ...bioForm?.socials, linkedin: e.target.value } })}
+                    className="form-input"
+                    placeholder="https://in.linkedin.com/in/yourprofile"
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span style={{ width: '90px', fontSize: '0.82rem', color: 'var(--text-muted)', flexShrink: 0 }}>Instagram</span>
+                  <input
+                    type="url"
+                    value={bioForm?.socials?.instagram || ''}
+                    onChange={(e) => setBioForm({ ...bioForm, socials: { ...bioForm?.socials, instagram: e.target.value } })}
+                    className="form-input"
+                    placeholder="https://www.instagram.com/yourhandle"
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span style={{ width: '90px', fontSize: '0.82rem', color: 'var(--text-muted)', flexShrink: 0 }}>X / Twitter</span>
+                  <input
+                    type="url"
+                    value={bioForm?.socials?.twitter || ''}
+                    onChange={(e) => setBioForm({ ...bioForm, socials: { ...bioForm?.socials, twitter: e.target.value } })}
+                    className="form-input"
+                    placeholder="https://x.com/yourhandle"
+                  />
+                </div>
+              </div>
             </div>
 
             <button type="submit" className="btn btn-primary" style={{ alignSelf: 'flex-start' }}>

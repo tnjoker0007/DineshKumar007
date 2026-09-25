@@ -14,7 +14,8 @@ export const defaultPortfolioData = {
     socials: {
       github: "https://github.com/tnjoker0007",
       linkedin: "https://in.linkedin.com/in/dinesh-kumar-e-550816217",
-      instagram: "https://www.instagram.com/tj_editz_07"
+      instagram: "https://www.instagram.com/tj_editz_07",
+      twitter: "https://x.com/TJEDITZ2006"
     },
     stats: {
       yearsExperience: "2+ Yrs",

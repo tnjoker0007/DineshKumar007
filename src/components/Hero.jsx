@@ -65,15 +65,21 @@ export const Hero = () => {
 
             {/* Social Media Icons */}
             <div className="social-icons">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Instagram">
-                <Instagram size={20} />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Twitter">
-                <Twitter size={20} />
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="LinkedIn">
-                <Linkedin size={20} />
-              </a>
+              {personalInfo.socials?.instagram && (
+                <a href={personalInfo.socials.instagram} target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="Instagram">
+                  <Instagram size={20} />
+                </a>
+              )}
+              {personalInfo.socials?.twitter && (
+                <a href={personalInfo.socials.twitter} target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="X / Twitter">
+                  <Twitter size={20} />
+                </a>
+              )}
+              {personalInfo.socials?.linkedin && (
+                <a href={personalInfo.socials.linkedin} target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="LinkedIn">
+                  <Linkedin size={20} />
+                </a>
+              )}
             </div>
           </div>
         </div>
