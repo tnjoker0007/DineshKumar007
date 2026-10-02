@@ -27,15 +27,75 @@ export const defaultPortfolioData = {
 
   projects: [
     {
+      id: "p-tj-pro",
+      title: "TJ Player Pro - Audiophile Audio Engine",
+      shortDesc: "Audiophile music player with custom UAC 2.0 bit-perfect USB streaming, parametric EQ, and DSD playback.",
+      longDesc: "Flagship audiophile music player engineered for Android. Built with low-level Rust audio pipelines bypassing standard Android audio mixer resampling for true bit-perfect USB Audio Class 2 (UAC 2.0) transmission to external DACs. Features a high-precision multi-band parametric equalizer, lossless DSD/DSF/FLAC decoders, dynamic waveform visualizers, and custom neon dark UI.",
+      category: "Mobile App",
+      tags: ["Android", "Flutter", "Rust FFI", "UAC 2.0", "ExoPlayer", "Audio DSP", "Lossless DSD/FLAC"],
+      image: "/images/projects/tj_player_pro.png",
+      liveUrl: "https://github.com/tnjoker0007/tj-player-pro/releases/tag/v1.0.0",
+      githubUrl: "https://github.com/tnjoker0007/tj-player-pro",
+      featured: true
+    },
+    {
+      id: "p-tj-native",
+      title: "TJ Player Native (Android Kotlin)",
+      shortDesc: "100% native Android music player with automated media store indexing, rotary knob EQ, and background playback service.",
+      longDesc: "Native Android architecture powered by modern Kotlin, AndroidX Media3 / ExoPlayer, and Android AudioFx APIs. Built with custom rotary knob UI controls, SQLite playlist persistence, automated storage scanning, and system notification lockscreen media controls.",
+      category: "Mobile App",
+      tags: ["Kotlin", "Android SDK", "ExoPlayer", "Media3", "AudioFx", "Custom Views", "SQLite"],
+      image: "/images/projects/tj_player_native.png",
+      liveUrl: "",
+      githubUrl: "https://github.com/tnjoker0007/tj-player-android",
+      featured: true
+    },
+    {
+      id: "p-aurora",
+      title: "Aurora Audio Player (Web & Hybrid)",
+      shortDesc: "High-fidelity web and hybrid mobile audio player featuring real-time 60fps canvas waveform visualizers and 10-band EQ.",
+      longDesc: "Full-featured web audio platform built with Vanilla JavaScript, Web Audio API, and HTML5 Canvas. Features real-time frequency spectrum analysis, interactive multi-band graphic equalizer with preset curves, sleep timer controller, and dynamic queue management.",
+      category: "Web App",
+      tags: ["JavaScript", "Web Audio API", "HTML5 Canvas", "Capacitor", "Equalizer", "Glassmorphism"],
+      image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=800",
+      liveUrl: "",
+      githubUrl: "https://github.com/tnjoker0007/aurora-audio-player",
+      featured: true
+    },
+    {
+      id: "p-sih-mining",
+      title: "SIH Smart Mining Safety & Rock Hazard AI",
+      shortDesc: "Smart India Hackathon AI platform for real-time rock instability detection, hazard forecasting, and mine worker safety.",
+      longDesc: "Engineered for the Smart India Hackathon to enhance occupational safety in underground and open-cast mining operations. Integrates computer vision algorithms with IoT sensor streams to analyze rock fissure growth, predict slope stability hazards, and trigger automated emergency warning sirens.",
+      category: "AI & Web Apps",
+      tags: ["Python AI", "Computer Vision", "IoT Sensors", "Hazard Forecasting", "React", "FastAPI"],
+      image: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=800",
+      liveUrl: "",
+      githubUrl: "https://github.com/tnjoker0007/sih_mining",
+      featured: true
+    },
+    {
+      id: "p-behavioral-well",
+      title: "BehavioralWell - Mental Health & Stress Analytics",
+      shortDesc: "AI-driven behavioral wellness and psychological stress analysis platform powered by Large Language Models.",
+      longDesc: "Comprehensive mental health screening and psychological wellbeing assistant. Uses natural language processing to gauge sentiment, stress levels, and emotional patterns from daily conversational check-ins, generating actionable therapeutic wellness recommendations.",
+      category: "AI & Web Apps",
+      tags: ["LLM / NLP", "Python", "FastAPI", "Sentiment Analysis", "React", "TailwindCSS"],
+      image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=800",
+      liveUrl: "",
+      githubUrl: "https://github.com/tnjoker0007/BehavioralWell",
+      featured: true
+    },
+    {
       id: "p1",
       title: "NovaCare AI Health Assistant",
       shortDesc: "AI-powered medical triage, patient scheduling, and real-time health analytics platform.",
-      longDesc: "NovaCare AI is an enterprise healthcare portal built with React, Node.js, and Python backend microservices to optimize patient triage, medical data processing, and clinical analytics.",
+      longDesc: "NovaCare AI is an enterprise healthcare portal built with React, Node.js, and Zoho Catalyst serverless microservices to optimize patient triage, medical data processing, and clinical analytics.",
       category: "AI & Web Apps",
-      tags: ["React", "Node.js", "Python AI", "PostgreSQL", "TailwindCSS"],
+      tags: ["React", "Node.js", "Python AI", "Zoho Catalyst", "PostgreSQL", "TailwindCSS"],
       image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800",
       liveUrl: "https://novacare-ai.onslate.in",
-      githubUrl: "",
+      githubUrl: "https://github.com/tnjoker0007/NovaCare-AI",
       featured: true
     },
     {
@@ -71,7 +131,7 @@ export const defaultPortfolioData = {
       tags: ["Java Tools", "DevOps", "Tech Infrastructure", "Platform Engineering"],
       image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
       liveUrl: "",
-      githubUrl: "https://github.com/lti4webgit/lti_tech_platforms",
+      githubUrl: "https://github.com/tnjoker0007/lti_tech_platforms",
       featured: true
     },
     {
@@ -83,7 +143,7 @@ export const defaultPortfolioData = {
       tags: ["React", "JavaScript", "CSS3", "UI/UX Architecture"],
       image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
       liveUrl: "",
-      githubUrl: "https://github.com/lti4webgit/asma-portfolio-frontend",
+      githubUrl: "https://github.com/tnjoker0007/asma-portfolio-frontend",
       featured: false
     },
     {
@@ -95,7 +155,7 @@ export const defaultPortfolioData = {
       tags: ["Node.js", "Express API", "Security Auth", "Database"],
       image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=800",
       liveUrl: "",
-      githubUrl: "https://github.com/lti4webgit/asma-portfolio-backend",
+      githubUrl: "https://github.com/tnjoker0007/asma-portfolio-backend",
       featured: false
     }
   ],

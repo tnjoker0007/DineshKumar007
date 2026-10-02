@@ -3,16 +3,22 @@ import { defaultPortfolioData } from '../data/defaultData';
 
 const PortfolioContext = createContext();
 
-const LOCAL_STORAGE_KEY = 'dinesh_kumar_portfolio_v2';
+const LOCAL_STORAGE_KEY = 'dinesh_kumar_portfolio_v4';
 const THEME_STORAGE_KEY = 'asma_portfolio_theme_v1';
 
 const ensureDataDefaults = (raw) => {
   if (!raw || typeof raw !== 'object') return defaultPortfolioData;
+  
+  // Merge default projects so new projects always appear
+  const existingProjectIds = new Set((raw.projects || []).map(p => p.id));
+  const newDefaultProjects = defaultPortfolioData.projects.filter(p => !existingProjectIds.has(p.id));
+  const mergedProjects = [...(raw.projects || []), ...newDefaultProjects];
+
   return {
     ...defaultPortfolioData,
     ...raw,
     personalInfo: { ...defaultPortfolioData.personalInfo, ...(raw.personalInfo || {}) },
-    projects: Array.isArray(raw.projects) ? raw.projects : defaultPortfolioData.projects,
+    projects: mergedProjects.length > 0 ? mergedProjects : defaultPortfolioData.projects,
     certificates: Array.isArray(raw.certificates) ? raw.certificates : defaultPortfolioData.certificates,
     skills: Array.isArray(raw.skills) ? raw.skills : defaultPortfolioData.skills,
     experience: Array.isArray(raw.experience) ? raw.experience : defaultPortfolioData.experience,
